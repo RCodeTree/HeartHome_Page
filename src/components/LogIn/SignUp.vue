@@ -55,7 +55,6 @@
 <script setup>
 import { ref, reactive, inject, defineEmits } from 'vue'
 
-const emit = defineEmits(['message'])
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
 import ToastNotification from '../Utils/Animations/ToastNotification.vue'
@@ -64,6 +63,7 @@ import ToastNotification from '../Utils/Animations/ToastNotification.vue'
 const router = useRouter()
 const $axios = inject('axios')
 const store = loginStore()
+const emit = defineEmits(['message'])
 
 const showPassword = ref(false) // 密码显示状态
 const isLoading = ref(false) // 注册按钮加载状态
@@ -153,7 +153,7 @@ const handleRegister = async () => {
 
         // --- 处理注册失败逻辑 ---
         if (registerData.code == 500) {
-            showToast(registerData.msg, false)
+            // showToast(registerData.msg, false)
             emit('message', registerData.msg)
             isLoading.value = false
             registerForm.username = ''
@@ -164,7 +164,7 @@ const handleRegister = async () => {
 
         // --- 处理注册成功逻辑 ---
         if (registerData.code == 200) {
-            showToast(registerData.msg, true)
+            // showToast(registerData.msg, true)
             emit('message', registerData.msg)
             isLoading.value = false
             registerForm.username = ''

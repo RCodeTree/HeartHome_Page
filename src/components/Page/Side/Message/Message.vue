@@ -55,13 +55,6 @@
             </div>
         </div>
 
-        <!-- 加载更多按钮 -->
-        <div v-if="hasMoreMessages && !loading && messages.length > 0" class="load-more mt-3 mb-4">
-            <button @click="loadMoreMessages" class="btn btn-outline-primary btn-sm load-more-btn">
-                加载更多
-            </button>
-        </div>
-
         <!-- 加载中提示 -->
         <div v-if="loading && messages.length > 0" class="text-center mt-3 mb-4">
             <div class="spinner-border spinner-border-sm text-primary" role="status">
