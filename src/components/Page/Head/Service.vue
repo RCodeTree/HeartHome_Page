@@ -1,5 +1,5 @@
 <template>
-    <div class="service-container p-4" :class="{ 'container-expanded': isExpanded }">
+    <div class="service-container p-4">
         <div class="bubbles">
             <div class="bubble" v-for="n in 10" :key="n"></div>
         </div>
@@ -70,16 +70,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-// 侧边栏展开状态
-const isExpanded = ref(false)
-
-// 监听侧边栏状态变化事件
-const handleSideNavChange = (event) => {
-    if (event.detail && typeof event.detail.expanded === 'boolean') {
-        isExpanded.value = event.detail.expanded
-    }
-}
-
 // 服务类型数据
 const services = [
     {
@@ -119,17 +109,6 @@ const processSteps = [
     }
 ]
 
-// 组件挂载时添加事件监听
-onMounted(() => {
-    // 添加侧边栏状态变化事件监听
-    window.addEventListener('sidenav-change', handleSideNavChange)
-})
-
-// 组件卸载时移除事件监听
-onBeforeUnmount(() => {
-    // 移除侧边栏状态变化事件监听
-    window.removeEventListener('sidenav-change', handleSideNavChange)
-})
 </script>
 
 <style scoped>
@@ -179,18 +158,7 @@ onBeforeUnmount(() => {
     }
 }
 
-/* 响应侧边栏展开状态 */
-@media (min-width: 992px) {
-    .service-container {
-        margin-left: 20px;
-        width: calc(100% - 20px);
-    }
 
-    .service-container.container-expanded {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-    }
-}
 
 /* 页面标题样式 */
 .page-header {

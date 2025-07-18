@@ -1,5 +1,5 @@
 <template>
-    <div class="friend-list-container" :class="{ 'expanded': isExpanded }" ref="scrollContainer">
+    <div class="friend-list-container" ref="scrollContainer">
         <div class="friend-header sticky-top bg-white shadow-sm">
             <h2 class="friend-list-title">心友</h2>
 
@@ -65,7 +65,6 @@ const loadingMore = ref(true)
 const page = ref(1)
 const pageSize = 10
 const hasMoreFriends = ref(true)
-const isExpanded = ref(false) // 侧边栏状态
 const isSearching = ref(false) // 是否处于搜索状态
 const searchQuery = ref('') // 搜索关键词
 const scrollContainer = ref(null) // 滚动容器的引用
@@ -210,15 +209,8 @@ const searchFriends = () => {
     )
 }
 
-// 侧边栏状态变化处理函数
-const handleSidenavChange = (event) => {
-    isExpanded.value = event.detail.expanded
-}
-
 onMounted(() => {
     fetchFriends()
-    // 添加侧边栏状态变化事件监听
-    window.addEventListener('sidenav-change', handleSidenavChange)
 
     nextTick(() => {
         if (scrollContainer.value) {
@@ -228,8 +220,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    // 移除事件监听器
-    window.removeEventListener('sidenav-change', handleSidenavChange)
     if (scrollContainer.value) {
         scrollContainer.value.removeEventListener('scroll', handleScroll)
     }
@@ -253,18 +243,7 @@ onUnmounted(() => {
     display: none; /* Chrome, Safari, Opera */
 }
 
-/* 响应侧边栏展开状态 */
-@media (min-width: 992px) {
-    .friend-list-container {
-        margin-left: 20px;
-        width: calc(100% - 20px);
-    }
 
-    .friend-list-container.expanded {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-    }
-}
 
 
 
@@ -273,7 +252,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     position: sticky;
     top: 0;
     z-index: 1000;

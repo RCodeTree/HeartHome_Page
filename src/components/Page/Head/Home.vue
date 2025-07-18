@@ -1,6 +1,5 @@
 <template>
-    <div class="container-fluid d-flex flex-column ps-lg-4 content-wrapper"
-        :class="{ 'container-expanded': isExpanded }">
+    <div class="container-fluid d-flex flex-column ps-lg-4 content-wrapper">
         <div class="content-area overflow-auto flex-grow-1">
             <div class="text-center p-4 p-sm-3 bg-white bg-opacity-90 rounded-3 shadow custom-card my-4">
                 <h2 class="text-primary fw-bold mb-3 mobile-title">欢迎访问我们的网站</h2>
@@ -12,27 +11,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-// 侧边栏展开状态
-const isExpanded = ref(false)
-
-// 监听侧边栏状态变化事件
-const handleSideNavChange = (event) => {
-    if (event.detail && typeof event.detail.expanded === 'boolean') {
-        isExpanded.value = event.detail.expanded
-    }
-}
-
-// 添加事件监听
-onMounted(() => {
-    window.addEventListener('sidenav-change', handleSideNavChange)
-})
-
-// 移除事件监听
-onBeforeUnmount(() => {
-    window.removeEventListener('sidenav-change', handleSideNavChange)
-})
 </script>
 
 <style scoped>
@@ -262,17 +240,5 @@ onBeforeUnmount(() => {
     }
 }
 
-/* 响应侧边栏展开状态 */
-@media (min-width: 992px) {
-    .content-wrapper {
-        margin-left: 20px;
-        width: calc(100% - 20px);
-        transition: all 0.3s ease;
-    }
 
-    .content-wrapper.container-expanded {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-    }
-}
 </style>

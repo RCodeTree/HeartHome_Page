@@ -1,5 +1,5 @@
 <template>
-    <div class="message-container p-3" :class="{ 'container-expanded': isExpanded }">
+    <div class="message-container p-3">
         <!-- 批量操作区域 -->
         <div
             class="batch-operation-header sticky-top bg-white shadow-sm d-flex justify-content-between align-items-center mb-3">
@@ -204,18 +204,6 @@ const updateTimes = () => {
     messages.value = [...messages.value] // 触发视图更新
 }
 
-/**
-* 根据侧边栏状态变化调整消息列表伸缩状态
-*/
-// 侧边栏展开状态
-const isExpanded = ref(false)
-
-// 监听侧边栏状态变化事件
-const handleSideNavChange = (event) => {
-    if (event.detail && typeof event.detail.expanded === 'boolean') {
-        isExpanded.value = event.detail.expanded
-    }
-}
 // 监听滚动事件，实现滚动到底部自动加载更多
 const handleScroll = () => {
     const container = document.querySelector('.message-container')
@@ -236,8 +224,7 @@ onMounted(() => {
     // 设置定时器更新时间显示
     timer = setInterval(updateTimes, 60000) // 每分钟更新一次时间
 
-    // 添加侧边栏状态变化事件监听
-    window.addEventListener('sidenav-change', handleSideNavChange)
+
 
     // 添加滚动事件监听
     const container = document.querySelector('.message-container')
@@ -257,8 +244,7 @@ onBeforeUnmount(() => {
         clearInterval(timer)
     }
 
-    // 移除侧边栏状态变化事件监听
-    window.removeEventListener('sidenav-change', handleSideNavChange)
+
 
     // 移除滚动事件监听
     const container = document.querySelector('.message-container')
@@ -377,16 +363,10 @@ const deleteMessage = (message) => {
     }
 }
 
-/* 响应侧边栏展开状态 */
 @media (min-width: 992px) {
     .message-container {
         margin-left: 20px;
         width: calc(100% - 20px);
-    }
-
-    .message-container.container-expanded {
-        margin-left: 250px;
-        width: calc(100% - 250px);
     }
 }
 

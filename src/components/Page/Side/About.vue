@@ -1,5 +1,5 @@
 <template>
-    <div class="about-container" :class="{ 'container-expanded': isExpanded }">
+    <div class="about-container">
         <div class="bubbles">
             <div class="bubble" v-for="n in 100" :key="n"></div>
         </div>
@@ -48,27 +48,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-// 侧边栏展开状态
-const isExpanded = ref(false)
-
-// 监听侧边栏状态变化事件
-const handleSideNavChange = (event) => {
-    if (event.detail && typeof event.detail.expanded === 'boolean') {
-        isExpanded.value = event.detail.expanded
-    }
-}
-
-onMounted(() => {
-    // 添加侧边栏状态变化事件监听
-    window.addEventListener('sidenav-change', handleSideNavChange)
-})
-
-onBeforeUnmount(() => {
-    // 移除侧边栏状态变化事件监听
-    window.removeEventListener('sidenav-change', handleSideNavChange)
-})
 </script>
 
 <style scoped>
@@ -82,13 +61,7 @@ onBeforeUnmount(() => {
     width: calc(100% - 20px);
 }
 
-/* 响应侧边栏展开状态 */
-@media (min-width: 992px) {
-    .about-container.container-expanded {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-    }
-}
+
 
 /* 移动端样式优化 */
 @media (max-width: 991.98px) {

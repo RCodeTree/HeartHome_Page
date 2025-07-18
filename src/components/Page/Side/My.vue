@@ -109,7 +109,7 @@
                                             <small class="text-muted">{{ article.date }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
-                                                }}</span>
+                                                    }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
                                             </div>
                                         </div>

@@ -327,6 +327,7 @@ const handleSubmit = async () => {
 
 .card {
     margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
 }
 
 .upload-area {

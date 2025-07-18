@@ -44,27 +44,26 @@ const isExpanded = ref(false)
 // 显示导航栏
 const showNav = () => {
   isExpanded.value = true
-  // 发送侧边栏状态变化事件
-  window.dispatchEvent(new CustomEvent('sidenav-change', { detail: { expanded: true } }))
 }
 // 隐藏导航栏
 const hideNav = () => {
   isExpanded.value = false
-  // 发送侧边栏状态变化事件
-  window.dispatchEvent(new CustomEvent('sidenav-change', { detail: { expanded: false } }))
 }
 </script>
 
 <style scoped>
 .navbar {
   width: 250px;
-  background-color: rgba(255, 255, 255, 0);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   transform: translateX(-230px);
   /* 默认隐藏大部分，只露出一小部分 */
   box-shadow: none;
   /* 确保默认状态下没有阴影 */
+  border-top-right-radius: 10px;
+  /* 右上角圆角 */
+  border-bottom-right-radius: 10px;
+  /* 右下角圆角 */
 }
 
 /* 展开状态 */

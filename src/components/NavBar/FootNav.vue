@@ -1,7 +1,6 @@
 <template>
     <!-- 底部导航栏 -->
-    <nav class="navbar d-block d-lg-block flex-row align-items-center fixed-bottom"
-        :class="{ 'nav-expanded': isExpanded }">
+    <nav class="navbar d-block d-lg-block flex-row align-items-center fixed-bottom">
         <div class="container-fluid">
             <!-- PC端导航内容 -->
             <div class="d-flex w-100 justify-content-between align-items-center d-none d-lg-flex">
@@ -92,25 +91,6 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { loginStore } from '../../stores/HeartHomeStore'
 
-/**
- * 根据侧边栏展开状态控制底部导航栏的展开和折叠
- */
-// 控制底部导航栏状态
-const isExpanded = ref(false)
-// 监听侧边栏展开状态的事件
-const handleSideNavChange = (event) => {
-    if (event.detail && typeof event.detail.expanded === 'boolean') { // 确保事件对象中包含 expanded 属性
-        isExpanded.value = event.detail.expanded // 更新底部导航栏状态
-    }
-}
-// 组件挂载时添加事件监听
-onMounted(() => {
-    window.addEventListener('sidenav-change', handleSideNavChange)
-})
-// 组件卸载时移除事件监听
-onUnmounted(() => {
-    window.removeEventListener('sidenav-change', handleSideNavChange)
-})
 
 
 /*
@@ -137,16 +117,10 @@ const avatar = store.currentUser.avatarUrl // 头像
     z-index: 1020;
 }
 
-/* 响应侧边栏展开状态 */
 @media (min-width: 992px) {
     .navbar {
-        left: 20px;
-        width: calc(100% - 20px);
-    }
-
-    .navbar.nav-expanded {
-        left: 250px;
-        width: calc(100% - 250px);
+        left: 0;
+        width: 100%;
     }
 }
 
