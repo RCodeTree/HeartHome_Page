@@ -1,5 +1,5 @@
 <template>
-    <div class="friend-list-container" :class="{ 'expanded': isExpanded }">
+    <div class="friend-list-container" :class="{ 'expanded': isExpanded }" ref="scrollContainer">
         <div class="friend-header sticky-top bg-white shadow-sm">
             <h2 class="friend-list-title">心友</h2>
 
@@ -44,11 +44,14 @@
             </div>
         </transition-group>
 
-        <!-- 加载更多按钮 -->
-        <div v-if="hasMoreFriends && !loading" class="load-more">
-            <button @click="loadMoreFriends" class="load-more-btn">
-                加载更多
-            </button>
+        <!-- 加载中提示 -->
+        <div>
+            <div v-if="loadingMore && friends.length > 0" class="text-center mt-3 mb-4">
+                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <span class="ms-2">加载中...</span>
+            </div>
         </div>
     </div>
 </template>
@@ -58,12 +61,14 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 const friends = ref([])
 const loading = ref(true)
+const loadingMore = ref(true)
 const page = ref(1)
 const pageSize = 10
 const hasMoreFriends = ref(true)
 const isExpanded = ref(false) // 侧边栏状态
 const isSearching = ref(false) // 是否处于搜索状态
 const searchQuery = ref('') // 搜索关键词
+const scrollContainer = ref(null) // 滚动容器的引用
 
 const displayedFriends = ref(friends.value)
 
@@ -124,9 +129,10 @@ const formatLastActiveTime = (isoTimestamp) => {
     }
 }
 
+
+// 模拟API请求
 const fetchFriends = async () => {
     try {
-        // 模拟API请求
         await new Promise(resolve => setTimeout(resolve, 1500))
         const newFriends = Array(10).fill().map((_, index) => ({
             id: friends.value.length + index + 1,
@@ -140,19 +146,34 @@ const fetchFriends = async () => {
         friends.value.push(...newFriends)
         hasMoreFriends.value = newFriends.length === pageSize
         loading.value = false
+        loadingMore.value = false
     } catch (error) {
         console.error('获取好友列表失败:', error)
         loading.value = false
+        loadingMore.value = false
     }
 }
 
+// 加载更多好友
 const loadMoreFriends = async () => {
-    if (loading.value || !hasMoreFriends.value) return
+    if (loadingMore.value || !hasMoreFriends.value) return
 
-    loading.value = true
+    loadingMore.value = true
     page.value += 1
     await fetchFriends()
 }
+
+// 监听滚动事件，实现滚动到底部自动加载更多好友，当滚动到距离底部100px时触发加载更多
+const handleScroll = () => {
+    if (!scrollContainer.value) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainer.value;
+    if (scrollTop + clientHeight >= scrollHeight - 100 && !loadingMore.value && hasMoreFriends.value) {
+        loadMoreFriends();
+    }
+};
+
+
+
 
 const selectFriend = (friend) => {
     // 处理好友选择逻辑
@@ -198,11 +219,20 @@ onMounted(() => {
     fetchFriends()
     // 添加侧边栏状态变化事件监听
     window.addEventListener('sidenav-change', handleSidenavChange)
+
+    nextTick(() => {
+        if (scrollContainer.value) {
+            scrollContainer.value.addEventListener('scroll', handleScroll)
+        }
+    })
 })
 
 onUnmounted(() => {
     // 移除事件监听器
     window.removeEventListener('sidenav-change', handleSidenavChange)
+    if (scrollContainer.value) {
+        scrollContainer.value.removeEventListener('scroll', handleScroll)
+    }
 })
 </script>
 
@@ -213,10 +243,14 @@ onUnmounted(() => {
     height: calc(100vh - 60px);
     overflow-y: auto;
     position: relative;
-    scrollbar-width: thin;
-    scrollbar-color: #3b82f6 #f3f4f6;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
     transition: all 0.3s ease;
     padding: 0;
+}
+
+.friend-list-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* 响应侧边栏展开状态 */
@@ -232,19 +266,7 @@ onUnmounted(() => {
     }
 }
 
-.friend-list-container::-webkit-scrollbar {
-    width: 6px;
-}
 
-.friend-list-container::-webkit-scrollbar-track {
-    background: #f3f4f6;
-    border-radius: 3px;
-}
-
-.friend-list-container::-webkit-scrollbar-thumb {
-    background-color: #3b82f6;
-    border-radius: 3px;
-}
 
 .friend-header {
     display: flex;

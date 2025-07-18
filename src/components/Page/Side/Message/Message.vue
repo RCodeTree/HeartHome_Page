@@ -3,12 +3,12 @@
         <!-- 批量操作区域 -->
         <div
             class="batch-operation-header sticky-top bg-white shadow-sm d-flex justify-content-between align-items-center mb-3">
-            <div class="form-check d-flex align-items-center">
+            <div class="form-check d-flex">
                 <input class="form-check-input" type="checkbox" v-model="showCheckboxes">
-                <label class="form-check-label me-5">选择</label>
+                <label class="form-check-label ms-2 me-5">选择</label>
                 <input class="form-check-input" type="checkbox" v-model="allMessagesSelected"
                     :disabled="!showCheckboxes">
-                <label class="form-check-label">全选</label>
+                <label class="form-check-label ms-2">全选</label>
             </div>
             <div class="btn-group">
                 <button class="btn btn-outline-primary btn-sm" @click="batchMarkAsRead"
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 
 /** 
  * 消息列表数据
@@ -342,10 +342,13 @@ const deleteMessage = (message) => {
     overflow-y: auto;
     padding-bottom: 20px;
     transition: all 0.3s ease;
-    /* 自定义滚动条样式 */
-    scrollbar-width: thin;
-    scrollbar-color: #1890ff #f0f2f5;
-    -ms-overflow-style: none;
+    /* 隐藏滚动条 */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.message-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* 
@@ -359,24 +362,7 @@ const deleteMessage = (message) => {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Webkit浏览器的滚动条样式 */
-.message-container::-webkit-scrollbar {
-    width: 6px;
-}
 
-.message-container::-webkit-scrollbar-track {
-    background: #f0f2f5;
-    border-radius: 3px;
-}
-
-.message-container::-webkit-scrollbar-thumb {
-    background: #1890ff;
-    border-radius: 3px;
-}
-
-.message-container::-webkit-scrollbar-thumb:hover {
-    background: #40a9ff;
-}
 
 /* 
 响应式布局 

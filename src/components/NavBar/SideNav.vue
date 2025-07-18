@@ -58,14 +58,11 @@ const hideNav = () => {
 <style scoped>
 .navbar {
   width: 250px;
-  background-color: whitesmoke;
-  background-image: linear-gradient(to right, #f5f5f5, #e9e9e9);
-  background-size: 400% 400%;
-  animation: gradientFlow 8s ease infinite;
+  background-color: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   transform: translateX(-230px);
   /* 默认隐藏大部分，只露出一小部分 */
-  opacity: 0.9;
   box-shadow: none;
   /* 确保默认状态下没有阴影 */
 }
