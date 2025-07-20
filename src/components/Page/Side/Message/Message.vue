@@ -1,8 +1,8 @@
 <template>
-    <div class="message-container p-3">
+    <div class="message-container">
         <!-- 批量操作区域 -->
         <div
-            class="batch-operation-header sticky-top bg-white shadow-sm d-flex justify-content-between align-items-center mb-3">
+            class="batch-operation-header sticky-top bg-white shadow-sm d-flex justify-content-between align-items-center mb-3 p-3 w-100">
             <div class="form-check d-flex">
                 <input class="form-check-input" type="checkbox" v-model="showCheckboxes">
                 <label class="form-check-label ms-2 me-5">选择</label>
@@ -31,26 +31,28 @@
         </div>
 
         <!-- 消息列表 -->
-        <div class="list-group">
+        <div class="list-group p-3">
             <div v-for="message in messages" :key="message.id"
                 class="list-group-item list-group-item-action message-item"
                 @contextmenu.prevent="showContextMenu($event, message)" @touchstart="handleTouchStart($event, message)"
                 @touchend="handleTouchEnd">
                 <!-- 消息内容 -->
                 <div class="d-flex justify-content-between align-items-center position-relative">
-                    <div class="form-check" v-show="showCheckboxes">
+                    <div class="form-check" v-show="showCheckboxes" @click.stop>
                         <input class="form-check-input" type="checkbox" v-model="message.selected">
                     </div>
-                    <div class="d-flex align-items-center flex-grow-1 justify-content-end">
-                        <div class="unread-dot" v-show="!message.isRead"></div>
-                        <div class="message-content me-3">
-                            <h6 class="mb-1">{{ message.nickname }}</h6>
-                            <small class="text-muted">{{ formatTime(message.timestamp) }}</small>
+                    <router-link to="/message/chat" class="text-decoration-none flex-grow-1">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="unread-dot" v-show="!message.isRead"></div>
+                            <div class="message-content me-3 text-black">
+                                <h6 class="mb-1">{{ message.nickname }}</h6>
+                                <small class="text-muted">{{ formatTime(message.timestamp) }}</small>
+                            </div>
                         </div>
-                        <div class="message-avatar">
-                            <img :src="message.avatar" :alt="message.nickname" class="rounded-circle" loading="lazy">
-                        </div>
-                    </div>
+                    </router-link>
+                    <router-link to="/my" class="message-avatar" @click.stop>
+                        <img :src="message.avatar" :alt="message.nickname" class="rounded-circle" loading="lazy">
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -329,12 +331,15 @@ const deleteMessage = (message) => {
     padding-bottom: 20px;
     transition: all 0.3s ease;
     /* 隐藏滚动条 */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
 }
 
 .message-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 /* 

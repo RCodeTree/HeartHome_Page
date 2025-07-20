@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <ToastNotification ref="toastNotificationRef" /> -->
         <form @submit.prevent="handleLogin" class="login-form">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="username" placeholder="昵称" v-model="loginForm.username"
@@ -38,10 +37,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, defineEmits } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
-import ToastNotification from '../Utils/Animations/ToastNotification.vue'
 
 /* 
 插件导入
@@ -131,7 +129,6 @@ const handleLogin = async () => {
 
         // --- 处理登录失败逻辑 ---
         if (response.data.code == 500) {
-            // showToast(response.data.msg, false)
             emit('message', response.data.msg)
             isLoading.value = false
             loginForm.username = ''

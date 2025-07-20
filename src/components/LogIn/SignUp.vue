@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <ToastNotification ref="toastNotificationForSignUp" /> -->
         <form @submit.prevent="handleRegister" class="register-form">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="reg-username" placeholder="昵称"
@@ -53,11 +52,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, defineEmits } from 'vue'
+import { ref, reactive, inject } from 'vue'
 
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
-import ToastNotification from '../Utils/Animations/ToastNotification.vue'
 
 
 const router = useRouter()

@@ -37,6 +37,10 @@ const routes = [
         ]
     },
 
+
+    // 聊天窗口
+    { path: '/message/chat', name: 'Chat', component: () => import('../components/Page/Side/Message/ChatWindow/Chat.vue') },
+
     // 捕获所有未匹配路由的 404 页面
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../components/Utils/Error/404.vue'), meta: { requiresAuth: false } },
 ]
