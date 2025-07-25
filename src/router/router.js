@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router"
 import { loginStore } from '../stores/HeartHomeStore'
-import Page from '../components/Page/Page.vue'
-import LogIn from '../components/LogIn/LogIn.vue'
+import Page from '../Pages/Page.vue'
+import LogIn from '../Pages/LogIn/LogIn.vue'
 
 /* 
 路由配置
@@ -15,8 +15,8 @@ const routes = [
         redirect: '/login/signin',
         meta: { requiresAuth: false },
         children: [
-            { path: 'signin', name: 'SignIn', component: () => import('../components/LogIn/SignIn.vue') },
-            { path: 'signup', name: 'SignUp', component: () => import('../components/LogIn/SignUp.vue') },
+            { path: 'signin', name: 'SignIn', component: () => import('../Pages/LogIn/SignIn.vue') },
+            { path: 'signup', name: 'SignUp', component: () => import('../Pages/LogIn/SignUp.vue') },
         ]
     },
 
@@ -27,22 +27,22 @@ const routes = [
         redirect: '/home',          // 默认重定向到 '/home'
         meta: { requiresAuth: true },
         children: [                 // 子路由定义 --- Head Side Foot 
-            { path: 'home', name: 'Home', component: () => import('../components/Page/Head/Home.vue') },
-            { path: 'service', name: 'Service', component: () => import('../components/Page/Head/Service.vue') },
-            { path: 'about', name: 'About', component: () => import('../components/Page/Side/About.vue') },
-            { path: 'message', name: 'Message', component: () => import('../components/Page/Side/Message/Message.vue') },
-            { path: 'friend', name: 'Friend', component: () => import('../components/Page/Side/Friend.vue') },
-            { path: 'my', name: 'My', component: () => import('../components/Page/Side/My.vue') },
-            { path: 'publish', name: 'Publish', component: () => import('../components/Page/Foot/Publish.vue') },
+            { path: 'home', name: 'Home', component: () => import('../Pages/Head/Home.vue') },
+            { path: 'service', name: 'Service', component: () => import('../Pages/Head/Service.vue') },
+            { path: 'about', name: 'About', component: () => import('../Pages/Side/About.vue') },
+            { path: 'message', name: 'Message', component: () => import('../Pages/Side/Message/Message.vue') },
+            { path: 'friend', name: 'Friend', component: () => import('../Pages/Side/Friend.vue') },
+            { path: 'my', name: 'My', component: () => import('../Pages/Side/My.vue') },
+            { path: 'publish', name: 'Publish', component: () => import('../Pages/Foot/Publish.vue') },
         ]
     },
 
 
     // 聊天窗口
-    { path: '/message/chat', name: 'Chat', component: () => import('../components/Page/Side/Message/ChatWindow/Chat.vue') },
+    { path: '/message/chat', name: 'Chat', component: () => import('../Pages/Side/Message/ChatWindow/Chat.vue') },
 
     // 捕获所有未匹配路由的 404 页面
-    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../components/Utils/Error/404.vue'), meta: { requiresAuth: false } },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../Pages/Error/404.vue'), meta: { requiresAuth: false } },
 ]
 
 /* 

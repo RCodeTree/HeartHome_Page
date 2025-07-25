@@ -141,7 +141,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { loginStore } from '../../../stores/HeartHomeStore'
+import { loginStore } from '../../stores/HeartHomeStore'
 import { useRouter } from 'vue-router' // 导入 useRouter
 
 

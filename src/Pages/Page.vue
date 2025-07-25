@@ -6,9 +6,9 @@
 </template>
 
 <script setup>
-import HeadNav from '../NavBar/HeadNav.vue'
-import SideNav from '../NavBar/SideNav.vue'
-import FootNav from '../NavBar/FootNav.vue'
+import HeadNav from '../components/NavBar/HeadNav.vue'
+import SideNav from '../components/NavBar/SideNav.vue'
+import FootNav from '../components/NavBar/FootNav.vue'
 </script>
 
 <style scoped></style>

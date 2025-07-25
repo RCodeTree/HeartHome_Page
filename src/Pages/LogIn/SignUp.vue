@@ -33,14 +33,7 @@
                 </div>
             </div>
 
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="agreeTerms" v-model="registerForm.agreeTerms"
-                    :class="{ 'is-invalid': registerErrors.agreeTerms }" />
-                <label class="form-check-label" for="agreeTerms">我同意所有条款和条件</label>
-                <div class="invalid-feedback" v-if="registerErrors.agreeTerms">
-                    {{ registerErrors.agreeTerms }}
-                </div>
-            </div>
+
 
             <button type="submit" class="btn btn-primary w-100" :disabled="isLoading">
                 <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status"
@@ -52,14 +45,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
+import { SignUpService } from '../../Service/User/LogInService'
 
 
 const router = useRouter()
-const $axios = inject('axios')
 const store = loginStore()
 const emit = defineEmits(['message'])
 
@@ -69,15 +62,13 @@ const isLoading = ref(false) // 注册按钮加载状态
 const registerForm = reactive({
     username: '',
     password: '',
-    confirmPassword: '',
-    agreeTerms: false // 同意条款和条件
+    confirmPassword: ''
 })
 
 const registerErrors = reactive({
     username: '',
     password: '',
-    confirmPassword: '',
-    agreeTerms: ''
+    confirmPassword: ''
 })
 
 
@@ -117,21 +108,9 @@ const validateRegisterForm = () => { // 验证注册表单
         isValid = false
     }
 
-    if (!registerForm.agreeTerms) {
-        registerErrors.agreeTerms = '请同意条款和条件'
-        isValid = false
-    }
+
 
     return isValid
-}
-
-// 吐司消息
-const toastNotificationForSignUp = ref(null)
-
-const showToast = (message, isSuccess) => {
-    if (toastNotificationForSignUp.value) {
-        toastNotificationForSignUp.value.showToast(message, isSuccess)
-    }
 }
 
 
@@ -140,48 +119,36 @@ const handleRegister = async () => {
     if (!validateRegisterForm()) return // 如果表单验证失败，直接返回
     isLoading.value = true
 
-    try {
-        const response = await $axios.post('/user/login/signup', {
-            username: registerForm.username,
-            password: registerForm.confirmPassword
-        })
-        console.log('注册请求响应数据:', response)
+    // 调用注册服务
+    const response = await SignUpService(registerForm.username, registerForm.confirmPassword)
+    console.log('注册请求响应数据:', response)
 
-        const registerData = response.data
-
-        // --- 处理注册失败逻辑 ---
-        if (registerData.code == 500) {
-            // showToast(registerData.msg, false)
-            emit('message', registerData.msg)
-            isLoading.value = false
-            registerForm.username = ''
-            registerForm.password = ''
-            registerForm.confirmPassword = ''
-            return
-        }
-
-        // --- 处理注册成功逻辑 ---
-        if (registerData.code == 200) {
-            // showToast(registerData.msg, true)
-            emit('message', registerData.msg)
-            isLoading.value = false
-            registerForm.username = ''
-            registerForm.password = ''
-            registerForm.confirmPassword = ''
-            store.registerData(registerData) // 注册成功后，将注册数据存储到 Pinia 状态中做临时本地持久化
-            router.replace('/login') // 注册成功后，跳转到登录页面
-            return
-        }
+    const registerData = response.data // 后端返回的注册数据
+    const registerCode = response.data.code // 后端返回的状态码
 
 
+    // --- 处理注册失败逻辑 ---
+    if (registerCode == 500) {
+        emit('message', registerData.msg)
+        isLoading.value = false
+        registerForm.username = ''
+        registerForm.password = ''
+        registerForm.confirmPassword = ''
+        return
+    }
 
-
-    } catch (error) {
-        console.error('注册失败', error)
-        emit('message', '注册失败') // 发生错误时也发送消息
+    // --- 处理注册成功逻辑 ---
+    if (registerCode == 200) {
+        emit('message', registerData.msg)
+        isLoading.value = false
+        registerForm.username = ''
+        registerForm.password = ''
+        registerForm.confirmPassword = ''
+        store.registerData(registerData) // 注册成功后，将注册数据存储到 Pinia 状态中做临时本地持久化
+        router.replace('/login') // 注册成功后，跳转到登录页面
+        return
     }
     isLoading.value = false
-
 }
 
 </script>

@@ -39,7 +39,7 @@ import { ref, onMounted, computed } from 'vue'
 import SignIn from './SignIn.vue'
 import SignUp from './SignUp.vue'
 import router from '../../router/router'
-import ToastNotification from '../Utils/Animations/ToastNotification.vue'
+import ToastNotification from '../../components/Animations/ToastNotification.vue'
 
 // 当前激活的标签页
 const activeTab = ref('signin')

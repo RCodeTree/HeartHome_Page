@@ -8,7 +8,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { loginStore } from './stores/HeartHomeStore'
-import ToastNotification from './components/Utils/Animations/ToastNotification.vue'
+import ToastNotification from './components/Animations/ToastNotification.vue'
 
 const store = loginStore()
 const toastRef = ref(null)

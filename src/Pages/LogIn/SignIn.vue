@@ -37,15 +37,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
+import { SignInService } from '../../Service/User/LogInService'
 
 /* 
 插件导入
 */
 const router = useRouter() // 路由插件
-const $axios = inject('axios') // Axios 插件
 const store = loginStore()
 const emit = defineEmits(['message'])
 
@@ -100,15 +100,6 @@ const validateLoginForm = () => {
     return isValid // 返回验证结果
 }
 
-// 吐司消息
-const toastNotificationRef = ref(null)
-
-const showToast = (message, isSuccess) => {
-    if (toastNotificationRef.value) {
-        toastNotificationRef.value.showToast(message, isSuccess)
-    }
-}
-
 //  --- 登录业务逻辑 ---
 const handleLogin = async () => {
     if (!validateLoginForm()) return // 如果验证失败，则不进行登录请求
@@ -118,43 +109,32 @@ const handleLogin = async () => {
     loginErrors.username = ''
     loginErrors.password = ''
 
-    try {
-        // 向后端发送登录请求
-        const response = await $axios.post('/user/login/signin', {
-            username: loginForm.username,
-            password: loginForm.password
-            // 如果需要 '记住我' 功能，可能需要传递 loginForm.rememberMe
-        })
-        console.log('登录请求响应数据:', response)
+    // 调用登录服务
+    const response = await SignInService(loginForm.username, loginForm.password)
+    console.log('登录请求响应数据:', response)
 
-        // --- 处理登录失败逻辑 ---
-        if (response.data.code == 500) {
-            emit('message', response.data.msg)
-            isLoading.value = false
-            loginForm.username = ''
-            loginForm.password = ''
-            loginForm.rememberMe = false
-            isLoading.value = false
-            return
-        }
-
-
-        const loginData = response.data.data.user // 后端返回的用户数据
-        const token = response.data.data.jwtToken // 后端返回的 token
-        const loginCode = response.data.code // 后端返回的状态码
-
-        // --- 处理登录成功逻辑 ---
-        if (loginCode == 200 && loginData && token) {
-            store.loginUser(loginData) // 登录成功，将用户数据存储到 Pinia 状态中 并本地持久化
-            store.setToken(token) // 登录成功，将 token 存储到 Pinia 状态中 并本地持久化
-            router.replace('/home')
-        }
-    } catch (error) {
-        console.error('登录失败', error)
-        emit('message', '登录失败，请稍后再试')
+    const loginCode = response.data.code // 后端返回的状态码
+    // --- 处理登录失败逻辑 ---
+    if (loginCode == 500) {
+        emit('message', response.data.msg)
+        isLoading.value = false
+        loginForm.username = ''
+        loginForm.password = ''
+        loginForm.rememberMe = false
+        isLoading.value = false
+        return
     }
 
 
+    const loginData = response.data.data.user // 后端返回的用户数据
+    const token = response.data.data.jwtToken // 后端返回的 token
+    // --- 处理登录成功逻辑 ---
+    if (loginCode == 200 && loginData && token) {
+        store.loginUser(loginData) // 登录成功，将用户数据存储到 Pinia 状态中 并本地持久化
+        store.setToken(token) // 登录成功，将 token 存储到 Pinia 状态中 并本地持久化
+        router.replace('/home')
+    }
+    isLoading.value = false
 }
 
 </script>
