@@ -634,11 +634,28 @@ onBeforeUnmount(() => {
     .nav-tabs .nav-link {
         font-size: 0.9rem;
     }
+
+    /* 移动端退出登录按钮优化 */
+    .logout-btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        border-radius: 15px;
+        top: 10px;
+        right: 10px;
+        min-width: auto;
+        white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+        transform: scale(1.02);
+        /* 移动端减少旋转效果 */
+    }
 }
 
 @media (max-width: 576px) {
     .user-profile-card {
         padding: 15px;
+        position: relative;
     }
 
     .user-stats {
@@ -657,6 +674,45 @@ onBeforeUnmount(() => {
 
     .nav-tabs::-webkit-scrollbar {
         display: none;
+    }
+
+    /* 小屏幕设备退出登录按钮进一步优化 */
+    .logout-btn {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        border-radius: 12px;
+        top: 8px;
+        right: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(5px);
+        background-color: rgba(220, 53, 69, 0.9);
+        border: 1px solid rgba(220, 53, 69, 0.8);
+    }
+
+    .logout-btn:hover {
+        background-color: rgba(200, 35, 51, 0.95);
+        border-color: rgba(189, 33, 48, 0.9);
+        transform: scale(1.05);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 确保按钮在小屏幕上有足够的触摸区域 */
+    .logout-btn {
+        min-height: 32px;
+        min-width: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .logout-btn i {
+        font-size: 0.8rem;
     }
 }
 </style>
