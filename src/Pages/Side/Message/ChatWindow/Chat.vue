@@ -38,31 +38,73 @@
           </template>
         </div>
       </template>
+
+      <!-- 文件上传进度提示 -->
+      <div v-if="uploadingFiles.length > 0" class="uploading-indicator p-2">
+        <div v-for="fileName in uploadingFiles" :key="fileName" class="d-flex align-items-center mb-1">
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <small class="text-muted">正在上传: {{ fileName }}</small>
+        </div>
+      </div>
     </main>
 
     <!-- 聊天窗口底部 -->
     <footer class="chat-footer p-3">
       <div class="input-group">
-        <button class="btn btn-link"><i class="bi bi-emoji-smile fs-4"></i></button>
-        <button class="btn btn-link"><i class="bi bi-paperclip fs-4"></i></button>
+        <button class="btn btn-link" @click="toggleEmojiPanel" data-emoji-trigger><i
+            class="bi bi-emoji-smile fs-4"></i></button>
+        <button class="btn btn-link" @click="triggerFileUpload"><i class="bi bi-paperclip fs-4"></i></button>
+        <input type="file" ref="fileInput" @change="handleFileSelect" style="display: none;" multiple
+          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt">
         <textarea class="form-control message-input" placeholder="输入消息..." v-model="newMessage" @keydown="handleKeyDown"
           @input="handleInput" rows="1" style="resize: none; overflow: hidden;"></textarea>
         <button class="btn send-btn" @click="sendMessage" :disabled="!newMessage.trim()" ref="sendBtn">
           <i :class="sendIconClass" class="fs-4"></i>
         </button>
       </div>
+
+      <!-- 表情包面板 -->
+      <div v-if="showEmojiPanel"
+        class="emoji-panel position-absolute bottom-100 start-0 bg-white border rounded-3 shadow-lg p-3 mb-2"
+        style="width: 300px; max-height: 200px; overflow-y: auto; z-index: 1000;">
+        <div class="emoji-grid">
+          <button v-for="emoji in emojiList" :key="emoji" class="emoji-btn btn btn-light border-0 p-2 m-1 rounded-2"
+            @click="insertEmoji(emoji)" style="font-size: 1.2rem; width: 40px; height: 40px;">
+            {{ emoji }}
+          </button>
+        </div>
+      </div>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, computed } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const messageArea = ref(null)
 const newMessage = ref('')
 const sendBtn = ref(null)
+const fileInput = ref(null)
+const uploadingFiles = ref([])
+const showEmojiPanel = ref(false)
+
+// 表情包列表
+const emojiList = ref([
+  '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+  '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+  '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+  '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+  '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+  '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+  '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+  '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+  '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+  '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾'
+])
 
 // 消息数据
 const messages = ref([
@@ -117,26 +159,6 @@ const formatMessageContent = (content) => {
   formattedContent = formattedContent.replace(emailRegex, '<a href="mailto:$1">$1</a>');
   return formattedContent;
 }
-
-
-// 显示时间分隔符
-// const shouldShowTimeDivider = (message, index) => {
-//   // 每条消息都显示时间，特别是用户发送的消息
-//   if (message.type === 'outgoing') {
-//     return true;
-//   }
-//   // 对于接收的消息，保持原有逻辑
-//   if (index === 0) return true;
-//   const prevMessage = messages.value[index - 1];
-//   const diff = message.timestamp.getTime() - prevMessage.timestamp.getTime();
-//   // Show time if more than 5 minutes passed or if the day is different
-//   const prevDate = new Date(prevMessage.timestamp);
-//   const currDate = new Date(message.timestamp);
-//   if (prevDate.toDateString() !== currDate.toDateString()) {
-//     return true;
-//   }
-//   return diff > 5 * 60 * 1000;
-// }
 
 
 // 格式化时间分隔符
@@ -266,9 +288,136 @@ const scrollToBottom = () => {
   }
 }
 
+// 触发文件上传
+const triggerFileUpload = () => {
+  fileInput.value?.click()
+}
+
+// 处理文件选择
+const handleFileSelect = async (event) => {
+  const files = Array.from(event.target.files)
+  if (files.length === 0) return
+
+  for (const file of files) {
+    await uploadFile(file)
+  }
+
+  // 清空文件输入
+  event.target.value = ''
+}
+
+// 上传文件
+const uploadFile = async (file) => {
+  try {
+    // 添加到上传中列表
+    uploadingFiles.value.push(file.name)
+
+    // 创建FormData
+    const formData = new FormData()
+    formData.append('file', file)
+
+    // 这里应该调用实际的文件上传API
+    // const response = await axios.post('/api/upload', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   }
+    // })
+
+    // 模拟上传过程
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    // 模拟上传成功，创建文件URL（实际应用中应该使用服务器返回的URL）
+    const fileUrl = URL.createObjectURL(file)
+
+    // 发送文件消息
+    sendFileMessage(file, fileUrl)
+
+    // 从上传中列表移除
+    uploadingFiles.value = uploadingFiles.value.filter(name => name !== file.name)
+
+  } catch (error) {
+    console.error('文件上传失败:', error)
+    // 从上传中列表移除
+    uploadingFiles.value = uploadingFiles.value.filter(name => name !== file.name)
+    // 这里可以添加错误提示
+  }
+}
+
+// 发送文件消息
+const sendFileMessage = (file, fileUrl) => {
+  let content = ''
+
+  if (file.type.startsWith('image/')) {
+    content = `<img src="${fileUrl}" alt="${file.name}" style="max-width: 200px; max-height: 200px; border-radius: 8px;" />`
+  } else if (file.type.startsWith('video/')) {
+    content = `<video controls style="max-width: 200px; max-height: 200px; border-radius: 8px;"><source src="${fileUrl}" type="${file.type}">您的浏览器不支持视频播放。</video>`
+  } else if (file.type.startsWith('audio/')) {
+    content = `<audio controls><source src="${fileUrl}" type="${file.type}">您的浏览器不支持音频播放。</audio>`
+  } else {
+    content = `<a href="${fileUrl}" download="${file.name}" style="color: #007bff; text-decoration: none;"><i class="bi bi-file-earmark"></i> ${file.name}</a>`
+  }
+
+  messages.value.push({
+    type: 'outgoing',
+    content: content,
+    sender: '我',
+    timestamp: new Date(),
+    avatar: '/image/OIP-C (4).jpg'
+  })
+
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
+
+// 切换表情包面板
+const toggleEmojiPanel = () => {
+  showEmojiPanel.value = !showEmojiPanel.value
+}
+
+// 插入表情
+const insertEmoji = (emoji) => {
+  const textarea = document.querySelector('.message-input')
+  if (textarea) {
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const newValue = newMessage.value.substring(0, start) + emoji + newMessage.value.substring(end)
+
+    newMessage.value = newValue
+
+    nextTick(() => {
+      textarea.focus()
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length
+      autoResizeTextarea(textarea)
+    })
+  } else {
+    newMessage.value += emoji
+  }
+
+  // 插入表情后关闭面板
+  showEmojiPanel.value = false
+}
+
+// 点击外部关闭表情包面板
+const handleClickOutside = (event) => {
+  const emojiPanel = document.querySelector('.emoji-panel')
+  const emojiBtn = event.target.closest('.btn[data-emoji-trigger]')
+
+  if (showEmojiPanel.value && emojiPanel && !emojiPanel.contains(event.target) && !emojiBtn) {
+    showEmojiPanel.value = false
+  }
+}
+
 // 组件挂载后滚动到底部
 onMounted(() => {
   scrollToBottom()
+  // 添加全局点击事件监听
+  document.addEventListener('click', handleClickOutside)
+})
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
@@ -302,24 +451,71 @@ onMounted(() => {
 .message-area {
   overflow-y: auto;
   background: transparent;
+  /* 隐藏滚动条 */
+}
+
+.message-area {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
 }
 
 .message-area::-webkit-scrollbar {
-  width: 6px;
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
-.message-area::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
+/* 文件上传进度提示样式 */
+.uploading-indicator {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.message-area::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
+.uploading-indicator .spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  color: #007bff;
 }
 
-.message-area::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+/* 表情包面板样式 */
+.emoji-panel {
+  animation: fadeInUp 0.2s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.emoji-btn {
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-btn:hover {
+  background-color: #e9ecef !important;
+  transform: scale(1.1);
+}
+
+.emoji-btn:active {
+  transform: scale(0.95);
 }
 
 .message-group {
@@ -339,6 +535,9 @@ onMounted(() => {
   max-width: 70%;
   border-radius: 18px;
   position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .incoming .message-bubble {
@@ -351,6 +550,14 @@ onMounted(() => {
   background: rgba(102, 126, 234, 0.8);
   color: white;
   margin-right: 8px;
+}
+
+.message-bubble p {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  margin-bottom: 0 !important;
 }
 
 .message-meta {
@@ -428,9 +635,9 @@ onMounted(() => {
 }
 
 .send-btn {
-  background: rgba(102, 126, 234, 0.8);
-  border: 1px solid rgba(102, 126, 234, 0.8);
-  color: white;
+  background: transparent;
+  border: none;
+  color: rgba(102, 126, 234, 0.8);
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -440,7 +647,7 @@ onMounted(() => {
   margin-left: 4px;
   margin-right: 2px;
   flex-shrink: 0;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   align-self: flex-end;
   position: relative;
 }
@@ -451,14 +658,15 @@ onMounted(() => {
 }
 
 .send-btn:hover:not(:disabled) {
-  background: rgba(102, 126, 234, 1);
-  border-color: rgba(102, 126, 234, 1);
-  color: white;
+  background: rgba(102, 126, 234, 0.1);
+  color: rgba(102, 126, 234, 1);
+  transform: scale(1.1);
 }
 
 .send-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  color: rgba(102, 126, 234, 0.3);
 }
 
 .time-divider {
@@ -491,6 +699,43 @@ onMounted(() => {
 
   .message-area {
     padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .message-bubble {
+    max-width: 90%;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .chat-header {
+    padding: 0.75rem;
+  }
+
+  .chat-footer {
+    padding: 0.75rem;
+  }
+
+  .message-area {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-bubble {
+    max-width: 95%;
+  }
+
+  .incoming .message-bubble {
+    margin-left: 4px;
+  }
+
+  .outgoing .message-bubble {
+    margin-right: 4px;
   }
 }
 </style>
