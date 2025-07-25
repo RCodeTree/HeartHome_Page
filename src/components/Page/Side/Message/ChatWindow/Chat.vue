@@ -1,6 +1,6 @@
 <template>
   <div class="chat-container d-flex flex-column vh-100">
-    <!-- Header -->
+    <!-- 聊天窗口头部 -->
     <header class="chat-header d-flex align-items-center p-3">
       <button class="btn btn-link text-dark me-3" @click="goBack">
         <i class="bi bi-arrow-left fs-4"></i>
@@ -14,10 +14,10 @@
       </div>
     </header>
 
-    <!-- Message Area -->
+    <!-- 聊天窗口主体 -->
     <main class="message-area flex-grow-1 p-3" ref="messageArea">
       <template v-for="(message, index) in messages" :key="index">
-        <div v-if="shouldShowTimeDivider(message, index)" class="time-divider">
+        <div class="time-divider">
           <span>{{ formatTimeDivider(message.timestamp) }}</span>
         </div>
         <div class="message-group mb-3" :class="message.type">
@@ -40,7 +40,7 @@
       </template>
     </main>
 
-    <!-- Footer Input -->
+    <!-- 聊天窗口底部 -->
     <footer class="chat-footer p-3">
       <div class="input-group">
         <button class="btn btn-link"><i class="bi bi-emoji-smile fs-4"></i></button>
@@ -108,6 +108,7 @@ const goBack = () => {
   router.back()
 }
 
+// 格式化消息内容
 const formatMessageContent = (content) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
@@ -117,26 +118,36 @@ const formatMessageContent = (content) => {
   return formattedContent;
 }
 
-const shouldShowTimeDivider = (message, index) => {
-  if (index === 0) return true;
-  const prevMessage = messages.value[index - 1];
-  const diff = message.timestamp.getTime() - prevMessage.timestamp.getTime();
-  // Show time if more than 5 minutes passed or if the day is different
-  const prevDate = new Date(prevMessage.timestamp);
-  const currDate = new Date(message.timestamp);
-  if (prevDate.toDateString() !== currDate.toDateString()) {
-    return true;
-  }
-  return diff > 5 * 60 * 1000;
-}
 
+// 显示时间分隔符
+// const shouldShowTimeDivider = (message, index) => {
+//   // 每条消息都显示时间，特别是用户发送的消息
+//   if (message.type === 'outgoing') {
+//     return true;
+//   }
+//   // 对于接收的消息，保持原有逻辑
+//   if (index === 0) return true;
+//   const prevMessage = messages.value[index - 1];
+//   const diff = message.timestamp.getTime() - prevMessage.timestamp.getTime();
+//   // Show time if more than 5 minutes passed or if the day is different
+//   const prevDate = new Date(prevMessage.timestamp);
+//   const currDate = new Date(message.timestamp);
+//   if (prevDate.toDateString() !== currDate.toDateString()) {
+//     return true;
+//   }
+//   return diff > 5 * 60 * 1000;
+// }
+
+
+// 格式化时间分隔符
 const formatTimeDivider = (timestamp) => {
   const date = new Date(timestamp);
   const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const yesterday = new Date(today);
+  today.setHours(0, 0, 0, 0); // 今天0点
+  const yesterday = new Date(today); // 昨天0点
+
   yesterday.setDate(yesterday.getDate() - 1);
 
   const messageDate = new Date(date);
