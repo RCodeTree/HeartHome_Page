@@ -1,25 +1,34 @@
 import AxiosClient from "../../axios/AxiosClient"
+import { loginStore } from "../../stores/HeartHomeStore"
+
+
+
 
 // 登录服务
 export const SignInService = async (username, password) => {
-    try {
-        return await AxiosClient.post('/user/login/signin', {
-            username,
-            password
-        })
-    } catch (error) {
-        return '登录失败' + error
-    }
+    return await AxiosClient.post('/user/login/signin', {
+        username,
+        password
+    })
+
 }
 
 // 注册服务
 export const SignUpService = async (username, password) => {
-    try {
-        return await AxiosClient.post('/user/login/signup', {
-            username,
-            password
-        })
-    } catch (error) {
-        return '注册失败' + error
-    }
+    return await AxiosClient.post('/user/login/signup', {
+        username,
+        password
+    })
+
+}
+
+// 用户资料信息服务
+export const UserInfoService = async (username) => {
+    const store = loginStore()
+    return await AxiosClient.get(`/user/userInfo/${username}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${store.token}`
+            }
+        }) // 使用路径参数 
 }

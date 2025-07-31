@@ -3,6 +3,9 @@ import { loginStore } from '../stores/HeartHomeStore'
 import Page from '../Pages/Page.vue'
 import LogIn from '../Pages/LogIn/LogIn.vue'
 
+
+
+
 /* 
 路由配置
 */
@@ -32,7 +35,7 @@ const routes = [
             { path: 'about', name: 'About', component: () => import('../Pages/Side/About.vue') },
             { path: 'message', name: 'Message', component: () => import('../Pages/Side/Message/Message.vue') },
             { path: 'friend', name: 'Friend', component: () => import('../Pages/Side/Friend.vue') },
-            { path: 'my', name: 'My', component: () => import('../Pages/Side/My.vue') },
+            { path: `my`, name: 'My', component: () => import('../Pages/Side/My.vue') },
             { path: 'publish', name: 'Publish', component: () => import('../Pages/Foot/Publish.vue') },
         ]
     },

@@ -60,7 +60,7 @@ export let loginStore = defineStore('HeartHomeStoreForLogIn', () => {
     if (getToken) {
         console.log(`正在获取 token 数据...`)
         token.value = getToken
-        console.log(`获取到的 token 为: ${getToken}`)
+        console.log(`获取到的 token 为: ${token.value}`)
     }
 
     // 移除 token 数据

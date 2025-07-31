@@ -10,28 +10,30 @@
                 <div class="row align-items-center">
                     <div class="col-md-3 text-center">
                         <div class="avatar-container mb-3 mb-md-0">
-                            <img v-lazy="avatar" class="rounded-circle user-avatar" alt="用户头像">
+                            <img v-lazy="userInfo?.avatarUrl" class="rounded-circle user-avatar" alt="用户头像">
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <h2 class="text-primary fw-bold mb-2">{{ username }}</h2>
-                        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>北京市 海淀区</p>
-                        <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 2023年6月</p>
+                        <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
+                        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address
+                        }}</p>
+                        <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
+                        </p>
                         <div class="user-stats d-flex flex-wrap mb-3">
                             <div class="stat-item me-4">
-                                <span class="stat-value">128</span>
+                                <span class="stat-value">{{ userInfo?.worksCount }}</span>
                                 <span class="stat-label">作品</span>
                             </div>
                             <div class="stat-item me-4">
-                                <span class="stat-value">1.2k</span>
+                                <span class="stat-value">{{ userInfo?.fansCount }}</span>
                                 <span class="stat-label">粉丝</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-value">256</span>
+                                <span class="stat-value">{{ userInfo?.followsCount }}</span>
                                 <span class="stat-label">关注</span>
                             </div>
                         </div>
-                        <p class="user-bio">心理咨询师，致力于通过文字和图片传递温暖与力量，帮助人们找到内心的平静与幸福。</p>
+                        <p class="user-bio">{{ userInfo?.personalDescription || '该心友很懒什么都没有写' }}</p>
                     </div>
                 </div>
             </div>
@@ -140,9 +142,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue'
 import { loginStore } from '../../stores/HeartHomeStore'
 import { useRouter } from 'vue-router' // 导入 useRouter
+import { UserInfoService } from '../../Service/User/LogInService'
+import { vLazy } from '@/directives/lazy.js'
 
 
 
@@ -152,8 +156,11 @@ import { useRouter } from 'vue-router' // 导入 useRouter
 const store = loginStore()
 const router = useRouter() // 获取路由实例
 
-const username = computed(() => store.currentUser?.username || '访客')
-const avatar = computed(() => store.currentUser?.avatarUrl || '/image/default-avatar.png')
+/* 
+ 定义用户信息
+*/
+const username = computed(() => store.currentUser?.username || '访客') // 获取Pinia持久化数据查询用户信息
+let userInfo = ref(null)
 
 // 退出登录方法
 const logout = () => {
@@ -161,40 +168,6 @@ const logout = () => {
     router.push('/login') // 重定向到登录页面
 }
 
-
-// 懒加载指令
-const vLazy = {
-    mounted(el, binding) {
-        function loadImage() {
-            const imageElement = el
-            imageElement.src = binding.value
-        }
-
-        function handleIntersect(entries, observer) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    loadImage()
-                    observer.unobserve(el)
-                }
-            })
-        }
-
-        function createObserver() {
-            const options = {
-                root: null,
-                threshold: 0.1
-            }
-            const observer = new IntersectionObserver(handleIntersect, options)
-            observer.observe(el)
-        }
-
-        if (window.IntersectionObserver) {
-            createObserver()
-        } else {
-            loadImage()
-        }
-    }
-}
 
 // 模拟数据 - 所有作品
 const allWorks = ref([
@@ -331,8 +304,9 @@ const loadMoreWorks = async () => {
     }
 }
 
-// 监听加载更多按钮
-onMounted(() => {
+// 组件挂载时的操作
+onMounted(async () => {
+    // 初始化加载更多按钮
     const loadMoreBtn = document.querySelector('.load-more-btn')
     if (loadMoreBtn && window.IntersectionObserver) {
         const observer = new IntersectionObserver(
@@ -347,6 +321,14 @@ onMounted(() => {
         )
         observer.observe(loadMoreBtn)
     }
+
+    // 添加侧边栏状态变化事件监听
+    window.addEventListener('sidenav-change', handleSideNavChange)
+
+    // 调用API --- 获取用户信息
+    const response = await UserInfoService(username.value)
+    console.log('My返回的数据为：' + JSON.stringify(response.data.data))
+    userInfo.value = response.data.data
 })
 // 侧边栏展开状态
 const isExpanded = ref(false)
@@ -357,14 +339,6 @@ const handleSideNavChange = (event) => {
         isExpanded.value = event.detail.expanded
     }
 }
-
-// 组件挂载时的操作
-onMounted(() => {
-    // 可以在这里添加初始化逻辑，如从API获取数据等
-
-    // 添加侧边栏状态变化事件监听
-    window.addEventListener('sidenav-change', handleSideNavChange)
-})
 
 // 组件卸载时移除事件监听
 onBeforeUnmount(() => {
