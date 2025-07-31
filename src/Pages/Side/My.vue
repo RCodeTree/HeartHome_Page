@@ -15,8 +15,10 @@
                     </div>
                     <div class="col-md-9">
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
-                        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address
-                        }}</p>
+                        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
+                            '心友很神秘获取不到地址🤡'
+                        }}
+                        </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
                         <div class="user-stats d-flex flex-wrap mb-3">
@@ -111,7 +113,7 @@
                                             <small class="text-muted">{{ article.date }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
-                                                    }}</span>
+                                                }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
                                             </div>
                                         </div>
