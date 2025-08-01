@@ -25,10 +25,10 @@ export const SignUpService = async (username, password) => {
 // 用户资料信息服务
 export const UserInfoService = async (username) => {
     const store = loginStore()
-    return await AxiosClient.get(`/user/userInfo/${username}`,
+    return await AxiosClient.get(`/user/userInfo/${username}`, // 使用路径参数 
         {
             headers: {
-                'Authorization': `Bearer ${store.token}`
+                'Authorization': `Bearer ${store.token}` // 传递token
             }
-        }) // 使用路径参数 
+        })
 }

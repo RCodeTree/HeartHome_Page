@@ -1,4 +1,6 @@
 <template>
+    <!-- Toast 通知组件 -->
+    <ToastNotification ref="toastRef" />
     <div class="container-fluid d-flex flex-column ps-lg-4 content-wrapper"
         :class="{ 'container-expanded': isExpanded }">
         <div class="content-area overflow-auto flex-grow-1">
@@ -17,7 +19,7 @@
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
                         <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
                             '心友很神秘获取不到地址🤡'
-                        }}
+                            }}
                         </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
@@ -113,7 +115,7 @@
                                             <small class="text-muted">{{ article.date }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
-                                                }}</span>
+                                                    }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
                                             </div>
                                         </div>
@@ -149,6 +151,8 @@ import { loginStore } from '../../stores/HeartHomeStore'
 import { useRouter } from 'vue-router' // 导入 useRouter
 import { UserInfoService } from '../../Service/User/LogInService'
 import { vLazy } from '@/directives/lazy.js'
+import ToastNotification from '@/components/Animations/ToastNotification.vue'
+
 
 
 
@@ -163,6 +167,11 @@ const router = useRouter() // 获取路由实例
 */
 const username = computed(() => store.currentUser?.username || '访客') // 获取Pinia持久化数据查询用户信息
 let userInfo = ref(null)
+
+/*
+ Toast 通知引用
+ */
+const toastRef = ref(null)
 
 // 退出登录方法
 const logout = () => {
@@ -328,9 +337,16 @@ onMounted(async () => {
     window.addEventListener('sidenav-change', handleSideNavChange)
 
     // 调用API --- 获取用户信息
-    const response = await UserInfoService(username.value)
-    console.log('My返回的数据为：' + JSON.stringify(response.data.data))
-    userInfo.value = response.data.data
+    try {
+        const response = await UserInfoService(username.value)
+        console.log('My返回的数据为：' + JSON.stringify(response.data.data))
+        userInfo.value = response.data.data
+    } catch (error) {
+        // 显示错误提示
+        if (toastRef.value) {
+            toastRef.value.showToast('获取用户信息失败，请稍后重试', false)
+        }
+    }
 })
 // 侧边栏展开状态
 const isExpanded = ref(false)
