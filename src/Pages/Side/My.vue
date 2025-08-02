@@ -19,7 +19,7 @@
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
                         <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
                             '心友很神秘获取不到地址🤡'
-                        }}
+                            }}
                         </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
@@ -115,7 +115,7 @@
                                             <small class="text-muted">{{ article.date }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
-                                                }}</span>
+                                                    }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
                                             </div>
                                         </div>
@@ -336,18 +336,27 @@ onMounted(async () => {
     // 添加侧边栏状态变化事件监听
     window.addEventListener('sidenav-change', handleSideNavChange)
 
-    // 调用API --- 获取用户信息
-    try {
-        const response = await UserInfoService(username.value)
-        console.log('My返回的数据为：' + JSON.stringify(response.data.data))
-        userInfo.value = response.data.data
-    } catch (error) {
+    /*
+     调用API
+     */
+    // 获取用户信息
+    const response = await UserInfoService(username.value)
+    console.log('My返回的数据为：' + JSON.stringify(response.data.data))
+    userInfo.value = response.data.data
+    // 检查用户信息是否过期
+    if (response.data.code === 401 || !userInfo.value || userInfo.value === 'undefined') {
         // 显示错误提示
         if (toastRef.value) {
-            toastRef.value.showToast('获取用户信息失败，请稍后重试', false)
+            toastRef.value.showToast(`用户${response.data.msg}，获取用户信息失败，3秒后自动跳转`, false)
         }
-        router.replace({ name: 'Login' })
+
+        // 做三秒延时
+        setTimeout(() => {
+            store.removeStore('userInfo') // 移除本地存储的用户信息
+            router.replace({ name: 'SignIn' }) // 跳转到登录页
+        }, 3000)
     }
+
 })
 // 侧边栏展开状态
 const isExpanded = ref(false)
