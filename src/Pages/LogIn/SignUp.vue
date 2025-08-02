@@ -46,10 +46,10 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-
+import { SignUpService } from '../../Service/User/UserService'
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
-import { SignUpService } from '../../Service/User/LogInService'
+
 
 
 const router = useRouter()

@@ -19,7 +19,7 @@
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
                         <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
                             '心友很神秘获取不到地址🤡'
-                            }}
+                        }}
                         </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
@@ -74,15 +74,16 @@
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" v-if="allWorks.length > 0">
                             <div class="col" v-for="(work, index) in displayedWorks" :key="index">
                                 <div class="card h-100 work-card">
-                                    <img v-lazy="work.image" class="card-img-top work-image" :alt="work.title">
+                                    <img v-lazy="work.imageUrl" class="card-img-top work-image" :alt="work.title">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ work.title }}</h5>
-                                        <p class="card-text text-muted">{{ work.description }}</p>
+                                        <p class="card-text text-muted">{{ work.shortDesc }}</p>
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">{{ work.date }}</small>
+                                            <small class="text-muted">{{ work.createTime.slice(0, 10) }}</small>
                                             <div>
-                                                <span class="me-2"><i class="bi bi-heart"></i> {{ work.likes }}</span>
-                                                <span><i class="bi bi-chat"></i> {{ work.comments }}</span>
+                                                <span class="me-2"><i class="bi bi-heart"></i> {{ work.likesCount
+                                                }}</span>
+                                                <span><i class="bi bi-chat"></i> {{ work.commentsCount }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -115,7 +116,7 @@
                                             <small class="text-muted">{{ article.date }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
-                                                    }}</span>
+                                                }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
                                             </div>
                                         </div>
@@ -149,7 +150,8 @@
 import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue'
 import { loginStore } from '../../stores/HeartHomeStore'
 import { useRouter } from 'vue-router' // 导入 useRouter
-import { UserInfoService } from '../../Service/User/LogInService'
+import { UserInfoService } from '../../Service/User/UserService'
+import { UserWorksService } from '../../Service/Works/WorksService'
 import { vLazy } from '@/directives/lazy.js'
 import ToastNotification from '@/components/Animations/ToastNotification.vue'
 
@@ -180,105 +182,11 @@ const logout = () => {
 }
 
 
-// 模拟数据 - 所有作品
-const allWorks = ref([
-    {
-        id: 1,
-        title: '如何应对焦虑情绪',
-        description: '分享几种有效缓解焦虑的方法，帮助你找回内心的平静。',
-        image: '/image/OIP-C (1).jpg',
-        date: '2023-12-15',
-        likes: 128,
-        comments: 32,
-        type: 'article'
-    },
-    {
-        id: 2,
-        title: '森林疗愈',
-        description: '大自然的力量能够治愈心灵，大家一起感受森林的魅力。',
-        image: '/image/OIP-C (2).jpg',
-        date: '2023-11-28',
-        likes: 95,
-        comments: 18,
-        type: 'photo'
-    },
-    {
-        id: 3,
-        title: '情绪管理的艺术',
-        description: '学会识别和管理自己的情绪，是心理健康的重要一步。',
-        image: '/image/OIP-C (3).jpg',
-        date: '2023-11-10',
-        likes: 156,
-        comments: 42,
-        type: 'article'
-    },
-    {
-        id: 4,
-        title: '冥想练习指南',
-        description: '通过简单的冥想练习，培养专注力和内心的平静。',
-        image: '/image/OIP-C (4).jpg',
-        date: '2023-10-25',
-        likes: 87,
-        comments: 15,
-        type: 'article'
-    },
-    {
-        id: 5,
-        title: '阳光下的微笑',
-        description: '阳光总在风雨后，保持微笑面对生活的挑战。',
-        image: '/image/OIP-C (5).jpg',
-        date: '2023-10-12',
-        likes: 112,
-        comments: 24,
-        type: 'photo'
-    },
-    {
-        id: 6,
-        title: '亲子沟通技巧',
-        description: '如何与孩子建立有效的沟通，培养健康的亲子关系。',
-        image: '/image/OIP-C (6).jpg',
-        date: '2023-09-30',
-        likes: 143,
-        comments: 38,
-        type: 'article'
-    }
-])
+// 作品(包含图片、标题、文字)
+const allWorks = ref([])
 
-// 模拟文章数据
-const articles = ref([
-    {
-        id: 1,
-        title: '如何应对焦虑情绪',
-        excerpt: '焦虑是现代人常见的情绪问题，本文分享几种有效缓解焦虑的方法，帮助你找回内心的平静。通过呼吸练习、正念冥想和认知重构等技巧，你可以逐渐掌控自己的情绪。',
-        date: '2023-12-15',
-        likes: 128,
-        comments: 32
-    },
-    {
-        id: 3,
-        title: '情绪管理的艺术',
-        excerpt: '学会识别和管理自己的情绪，是心理健康的重要一步。本文将介绍情绪识别、情绪表达和情绪调节的基本技巧，帮助你在生活中更好地处理各种情绪。',
-        date: '2023-11-10',
-        likes: 156,
-        comments: 42
-    },
-    {
-        id: 4,
-        title: '冥想练习指南',
-        excerpt: '通过简单的冥想练习，培养专注力和内心的平静。本文将介绍几种适合初学者的冥想方法，以及如何将冥想融入日常生活，获得持续的心灵平静。',
-        date: '2023-10-25',
-        likes: 87,
-        comments: 15
-    },
-    {
-        id: 6,
-        title: '亲子沟通技巧',
-        excerpt: '如何与孩子建立有效的沟通，培养健康的亲子关系。本文分享积极倾听、我信息表达和设定合理界限等沟通技巧，帮助父母更好地理解和引导孩子。',
-        date: '2023-09-30',
-        likes: 143,
-        comments: 38
-    }
-])
+// 作品(包含标题、文字)
+const articles = ref([])
 
 // 模拟图片数据 - 添加 date 属性
 const photos = ref([
@@ -340,14 +248,14 @@ onMounted(async () => {
      调用API
      */
     // 获取用户信息
-    const response = await UserInfoService(username.value)
-    console.log('My返回的数据为：' + JSON.stringify(response.data.data))
-    userInfo.value = response.data.data
+    const UserInfoResponse = await UserInfoService(username.value)
+    console.log('UserInfoResponse返回的数据为：' + JSON.stringify(UserInfoResponse.data.data))
+    userInfo.value = UserInfoResponse.data.data
     // 检查用户信息是否过期
-    if (response.data.code === 401 || !userInfo.value || userInfo.value === 'undefined') {
+    if (UserInfoResponse.data.code === 401 || !userInfo.value || userInfo.value === 'undefined') {
         // 显示错误提示
         if (toastRef.value) {
-            toastRef.value.showToast(`用户${response.data.msg}，获取用户信息失败，3秒后自动跳转`, false)
+            toastRef.value.showToast(`用户${UserInfoResponse.data.msg}，获取用户信息失败，3秒后自动跳转`, false)
         }
 
         // 做三秒延时
@@ -357,6 +265,10 @@ onMounted(async () => {
         }, 3000)
     }
 
+    // 获取用户作品
+    const WorksResponse = await UserWorksService(username.value)
+    console.log('WorksResponse返回的数据为：' + JSON.stringify(WorksResponse.data.data))
+    allWorks.value = WorksResponse.data.data
 })
 // 侧边栏展开状态
 const isExpanded = ref(false)
