@@ -98,7 +98,7 @@
                                 {{ isLoading ? '加载中...' : '加载更多' }}
                             </button>
                         </div>
-                        <div class="text-center py-5" v-if="allWorks.length === 0">
+                        <div class="text-center py-5" v-if="!allWorks || allWorks.length === 0">
                             <i class="bi bi-inbox-fill display-1 text-muted"></i>
                             <p class="mt-3 text-muted">暂无作品</p>
                         </div>
@@ -106,38 +106,46 @@
 
                     <!-- 心理文章 -->
                     <div class="tab-pane fade" id="articles" role="tabpanel" aria-labelledby="articles-tab">
-                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                        <div class="row row-cols-1 row-cols-md-2 g-4" v-if="articles && articles.length > 0">
                             <div class="col" v-for="(article, index) in articles" :key="index">
                                 <div class="card h-100 article-card">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ article.title }}</h5>
-                                        <p class="card-text">{{ article.excerpt }}</p>
+                                        <p class="card-text">{{ article.shortDesc }}</p>
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">{{ article.date }}</small>
+                                            <small class="text-muted">{{ article.createTime.slice(0, 10) }}</small>
                                             <div>
-                                                <span class="me-2"><i class="bi bi-heart"></i> {{ article.likes
+                                                <span class="me-2"><i class="bi bi-heart"></i> {{ article.likesCount
                                                 }}</span>
-                                                <span><i class="bi bi-chat"></i> {{ article.comments }}</span>
+                                                <span><i class="bi bi-chat"></i> {{ article.commentsCount }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="text-center py-5" v-if="!articles || articles.length === 0">
+                            <i class="bi bi-journal-text display-1 text-muted"></i>
+                            <p class="mt-3 text-muted">暂无心理文章</p>
+                        </div>
                     </div>
 
                     <!-- 治愈图片 -->
                     <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
-                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3" v-if="photos && photos.length > 0">
                             <div class="col" v-for="(photo, index) in photos" :key="index">
                                 <div class="card h-100 photo-card">
-                                    <img v-lazy="photo.url" class="card-img-top photo-image" :alt="photo.title">
+                                    <img v-lazy="photo.imageUrl" class="card-img-top photo-image" :alt="photo.title">
                                     <div class="card-body p-2">
                                         <p class="card-text small mb-1">{{ photo.title }}</p>
-                                        <small class="text-muted photo-date">{{ photo.date }}</small>
+                                        <small class="text-muted photo-date">{{ photo.createTime.slice(0, 10) }}</small>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="text-center py-5" v-if="!photos || photos.length === 0">
+                            <i class="bi bi-image display-1 text-muted"></i>
+                            <p class="mt-3 text-muted">暂无治愈图片</p>
                         </div>
                     </div>
                 </div>
@@ -152,6 +160,8 @@ import { loginStore } from '../../stores/HeartHomeStore'
 import { useRouter } from 'vue-router' // 导入 useRouter
 import { UserInfoService } from '../../Service/User/UserService'
 import { UserWorksService } from '../../Service/Works/WorksService'
+import { UserEssaysService } from '../../Service/Works/WorksService'
+import { UserPhotosService } from '../../Service/Works/WorksService'
 import { vLazy } from '@/directives/lazy.js'
 import ToastNotification from '@/components/Animations/ToastNotification.vue'
 
@@ -178,7 +188,7 @@ const toastRef = ref(null)
 // 退出登录方法
 const logout = () => {
     store.removeStore()
-    router.push('/login') // 重定向到登录页面
+    router.replace('/login') // 重定向到登录页面
 }
 
 
@@ -188,17 +198,8 @@ const allWorks = ref([])
 // 作品(包含标题、文字)
 const articles = ref([])
 
-// 模拟图片数据 - 添加 date 属性
-const photos = ref([
-    { id: 2, url: '/image/OIP-C (2).jpg', date: '2023-11-28' },
-    { id: 5, url: '/image/OIP-C (5).jpg', date: '2023-10-12' },
-    { id: 7, url: '/image/OIP-C (7).jpg', date: '2023-09-15' },
-    { id: 8, url: '/image/OIP-C (8).jpg', date: '2023-08-22' },
-    { id: 9, url: '/image/OIP-C (9).jpg', date: '2023-07-30' },
-    { id: 10, url: '/image/OIP-C (10).jpg', date: '2023-07-05' },
-    { id: 11, url: '/image/OIP-C (11).jpg', date: '2023-06-18' },
-    { id: 12, url: '/image/OIP-C (12).jpg', date: '2023-05-29' }
-])
+// 作品(包含图片)
+const photos = ref([])
 
 // 分页加载逻辑
 const itemsPerPage = 3
@@ -269,6 +270,16 @@ onMounted(async () => {
     const WorksResponse = await UserWorksService(username.value)
     console.log('WorksResponse返回的数据为：' + JSON.stringify(WorksResponse.data.data))
     allWorks.value = WorksResponse.data.data
+
+    // 获取用户文章
+    const EssaysResponse = await UserEssaysService(username.value)
+    console.log('EssaysResponse返回的数据为：' + JSON.stringify(EssaysResponse.data.data))
+    articles.value = EssaysResponse.data.data
+
+    // 获取用户图片
+    const PhotosResponse = await UserPhotosService(username.value)
+    console.log('PhotosResponse返回的数据为：' + JSON.stringify(PhotosResponse.data.data))
+    photos.value = PhotosResponse.data.data
 })
 // 侧边栏展开状态
 const isExpanded = ref(false)
