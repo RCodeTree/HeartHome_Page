@@ -19,7 +19,7 @@
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
                         <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
                             '心友很神秘获取不到地址🤡'
-                        }}
+                            }}
                         </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
@@ -82,7 +82,7 @@
                                             <small class="text-muted">{{ work.createTime.slice(0, 10) }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ work.likesCount
-                                                }}</span>
+                                                    }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ work.commentsCount }}</span>
                                             </div>
                                         </div>
@@ -116,7 +116,7 @@
                                             <small class="text-muted">{{ article.createTime.slice(0, 10) }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likesCount
-                                                }}</span>
+                                                    }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.commentsCount }}</span>
                                             </div>
                                         </div>
@@ -250,7 +250,6 @@ onMounted(async () => {
      */
     // 获取用户信息
     const UserInfoResponse = await UserInfoService(username.value)
-    console.log('UserInfoResponse返回的数据为：' + JSON.stringify(UserInfoResponse.data.data))
     userInfo.value = UserInfoResponse.data.data
     // 检查用户信息是否过期
     if (UserInfoResponse.data.code === 401 || !userInfo.value || userInfo.value === 'undefined') {
@@ -268,17 +267,14 @@ onMounted(async () => {
 
     // 获取用户作品
     const WorksResponse = await UserWorksService(username.value)
-    console.log('WorksResponse返回的数据为：' + JSON.stringify(WorksResponse.data.data))
     allWorks.value = WorksResponse.data.data
 
     // 获取用户文章
     const EssaysResponse = await UserEssaysService(username.value)
-    console.log('EssaysResponse返回的数据为：' + JSON.stringify(EssaysResponse.data.data))
     articles.value = EssaysResponse.data.data
 
     // 获取用户图片
     const PhotosResponse = await UserPhotosService(username.value)
-    console.log('PhotosResponse返回的数据为：' + JSON.stringify(PhotosResponse.data.data))
     photos.value = PhotosResponse.data.data
 })
 // 侧边栏展开状态
