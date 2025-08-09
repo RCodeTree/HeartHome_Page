@@ -30,13 +30,14 @@
 
         <!-- 好友列表 -->
         <transition-group name="friend-list" tag="div" class="friends-container">
-            <div v-for="friend in displayedFriends" :key="friend.id" class="friend-item" @click="selectFriend(friend)">
-                <img :src="friend.avatar" :alt="friend.name" class="friend-avatar">
+            <div v-for="friend in displayedFriends" :key="friend.username" class="friend-item"
+                @click="selectFriend(friend)">
+                <img :src="friend.avatarUrl" :alt="friend.username" class="friend-avatar">
                 <div class="friend-info">
-                    <span class="friend-name">{{ friend.name }}</span>
+                    <span class="friend-name">{{ friend.username }}</span>
                     <span class="friend-status-time">
-                        <span class="friend-status" :class="friend.online ? 'online' : 'offline'">
-                            {{ friend.online ? '在线' : formatLastActiveTime(friend.lastActive) }}
+                        <span class="friend-status" :class="friend.status == 1 ? 'online' : 'offline'">
+                            {{ friend.status == 1 ? '在线' : formatLastActiveTime(friend.lastActive) }}
                         </span>
                     </span>
                 </div>
@@ -58,6 +59,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { loginStore } from '../../stores/HeartHomeStore'
+import { GetUserFriendListService } from '../../Service/User/UserService'
+
 
 const friends = ref([])
 const loading = ref(true)
@@ -68,31 +72,10 @@ const hasMoreFriends = ref(true)
 const isSearching = ref(false) // 是否处于搜索状态
 const searchQuery = ref('') // 搜索关键词
 const scrollContainer = ref(null) // 滚动容器的引用
+const store = loginStore()
+
 
 const displayedFriends = ref(friends.value)
-
-// 模拟好友头像数组
-const avatarImages = [
-    '/image/OIP-C (1).jpg',
-    '/image/OIP-C (2).jpg',
-    '/image/OIP-C (3).jpg',
-    '/image/OIP-C (4).jpg',
-    '/image/OIP-C (5).jpg',
-    '/image/OIP-C (6).jpg',
-    '/image/OIP-C (7).jpg',
-    '/image/OIP-C (8).jpg',
-    '/image/OIP-C (9).jpg',
-    '/image/OIP-C (10).jpg'
-]
-
-// 模拟好友昵称数组
-const nicknames = [
-    '阳光男孩', '快乐精灵', '梦想家', '编程达人',
-    '音乐发烧友', '旅行者', '美食家', '运动健将',
-    '艺术家', '读书人', '摄影师', '设计师',
-    '创意达人', '游戏玩家', '电影迷', '科技控',
-    '文艺青年', '户外探险家', '宅家达人', '时尚达人'
-]
 
 // 添加时间格式化函数
 const formatLastActiveTime = (isoTimestamp) => {
@@ -129,37 +112,12 @@ const formatLastActiveTime = (isoTimestamp) => {
 }
 
 
-// 模拟API请求
-const fetchFriends = async () => {
-    try {
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        const newFriends = Array(10).fill().map((_, index) => ({
-            id: friends.value.length + index + 1,
-            name: nicknames[(friends.value.length + index) % nicknames.length],
-            avatar: avatarImages[(friends.value.length + index) % avatarImages.length],
-            online: Math.random() > 0.8, // 降低在线概率以便测试离线时间
-            lastActive: new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString(),
-            status: Math.random() > 0.7 ? '忙碌中' : '空闲'
-        }))
-
-        friends.value.push(...newFriends)
-        hasMoreFriends.value = newFriends.length === pageSize
-        loading.value = false
-        loadingMore.value = false
-    } catch (error) {
-        console.error('获取好友列表失败:', error)
-        loading.value = false
-        loadingMore.value = false
-    }
-}
-
-// 加载更多好友
+// 加载更多好友 --- 类似分页加载
 const loadMoreFriends = async () => {
     if (loadingMore.value || !hasMoreFriends.value) return
 
     loadingMore.value = true
     page.value += 1
-    await fetchFriends()
 }
 
 // 监听滚动事件，实现滚动到底部自动加载更多好友，当滚动到距离底部100px时触发加载更多
@@ -170,8 +128,6 @@ const handleScroll = () => {
         loadMoreFriends();
     }
 };
-
-
 
 
 const selectFriend = (friend) => {
@@ -209,14 +165,27 @@ const searchFriends = () => {
     )
 }
 
-onMounted(() => {
-    fetchFriends()
-
+onMounted(async () => {
+    // 等待DOM更新完成后执行
     nextTick(() => {
         if (scrollContainer.value) {
             scrollContainer.value.addEventListener('scroll', handleScroll)
         }
     })
+
+    /*
+    调用API
+    */
+    // 获取用户好友列表
+    const FriendListResponse = await GetUserFriendListService(store.currentUser.username)
+    if (FriendListResponse.data.code === 200) {
+        friends.value = FriendListResponse.data.data
+        displayedFriends.value = friends.value
+
+    }
+    console.log(FriendListResponse)
+
+
 })
 
 onUnmounted(() => {
@@ -233,14 +202,17 @@ onUnmounted(() => {
     height: calc(100vh - 60px);
     overflow-y: auto;
     position: relative;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
     transition: all 0.3s ease;
     padding: 0;
 }
 
 .friend-list-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 

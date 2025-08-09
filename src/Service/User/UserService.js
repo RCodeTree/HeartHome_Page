@@ -32,3 +32,15 @@ export const UserInfoService = async (username) => {
             }
         })
 }
+
+// 获取用户好友列表服务
+export const GetUserFriendListService = async (username) => {
+    const store = loginStore()
+    return await AxiosClient.get(`/user/friends/${username}`, // 使用路径参数 
+        {
+            headers: {
+                'Authorization': `Bearer ${store.token}` // 传递token
+            }
+        })
+}
+

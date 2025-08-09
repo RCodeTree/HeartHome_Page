@@ -19,7 +19,7 @@
                         <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
                         <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
                             '心友很神秘获取不到地址🤡'
-                            }}
+                        }}
                         </p>
                         <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
                         </p>
@@ -82,7 +82,7 @@
                                             <small class="text-muted">{{ work.createTime.slice(0, 10) }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ work.likesCount
-                                                    }}</span>
+                                                }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ work.commentsCount }}</span>
                                             </div>
                                         </div>
@@ -116,7 +116,7 @@
                                             <small class="text-muted">{{ article.createTime.slice(0, 10) }}</small>
                                             <div>
                                                 <span class="me-2"><i class="bi bi-heart"></i> {{ article.likesCount
-                                                    }}</span>
+                                                }}</span>
                                                 <span><i class="bi bi-chat"></i> {{ article.commentsCount }}</span>
                                             </div>
                                         </div>
