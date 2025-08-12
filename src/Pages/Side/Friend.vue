@@ -1,4 +1,5 @@
 <template>
+    <ToastNotification ref="toastNotificationForFriend" />
     <div class="friend-list-container" ref="scrollContainer">
         <div class="friend-header sticky-top bg-white shadow-sm">
             <h2 class="friend-list-title">心友</h2>
@@ -37,7 +38,8 @@
                     <span class="friend-name">{{ friend.username }}</span>
                     <span class="friend-status-time">
                         <span class="friend-status" :class="friend.status == 1 ? 'online' : 'offline'">
-                            {{ friend.status == 1 ? '在线' : formatLastActiveTime(friend.lastActive) }}
+                            {{ friend.status == 1 ? '在线' : formatLastActiveTime(Date.now()) }}
+
                         </span>
                     </span>
                 </div>
@@ -61,6 +63,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { loginStore } from '../../stores/HeartHomeStore'
 import { GetUserFriendListService } from '../../Service/User/UserService'
+import ToastNotification from '../../components/Animations/ToastNotification.vue'
 
 
 const friends = ref([])
@@ -73,9 +76,20 @@ const isSearching = ref(false) // 是否处于搜索状态
 const searchQuery = ref('') // 搜索关键词
 const scrollContainer = ref(null) // 滚动容器的引用
 const store = loginStore()
-
-
 const displayedFriends = ref(friends.value)
+
+// 吐司消息
+const toastNotificationForFriend = ref(null)
+const showToast = (message, isSuccess) => {
+    if (toastNotificationForFriend.value) {
+        toastNotificationForFriend.value.showToast(message, isSuccess)
+    }
+}
+
+const handleToastMessage = (message) => {
+    const isSuccess = message.includes('成功') ? true : false
+    showToast(message, isSuccess)
+}
 
 // 添加时间格式化函数
 const formatLastActiveTime = (isoTimestamp) => {
@@ -117,7 +131,20 @@ const loadMoreFriends = async () => {
     if (loadingMore.value || !hasMoreFriends.value) return
 
     loadingMore.value = true
-    page.value += 1
+
+    try {
+        // 模拟延迟
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // 如果没有更多数据，设置hasMoreFriends为false
+        hasMoreFriends.value = false
+
+        page.value += 1
+    } catch (error) {
+        console.error('加载更多好友失败:', error)
+    } finally {
+        loadingMore.value = false
+    }
 }
 
 // 监听滚动事件，实现滚动到底部自动加载更多好友，当滚动到距离底部100px时触发加载更多
@@ -161,9 +188,11 @@ const searchFriends = () => {
 
     const query = searchQuery.value.toLowerCase()
     displayedFriends.value = friends.value.filter(friend =>
-        friend.name.toLowerCase().includes(query)
+        friend.username.toLowerCase().includes(query)
     )
 }
+
+
 
 onMounted(async () => {
     // 等待DOM更新完成后执行
@@ -173,19 +202,35 @@ onMounted(async () => {
         }
     })
 
-    /*
-    调用API
-    */
-    // 获取用户好友列表
-    const FriendListResponse = await GetUserFriendListService(store.currentUser.username)
-    if (FriendListResponse.data.code === 200) {
-        friends.value = FriendListResponse.data.data
-        displayedFriends.value = friends.value
+    try {
+        /*
+        调用API
+        */
+        // 获取用户好友列表
+        const FriendListResponse = await GetUserFriendListService(store.currentUser.username)
+        if (FriendListResponse.data.code === 200) {
+            friends.value = FriendListResponse.data.data
+            displayedFriends.value = friends.value
 
+            // 如果返回的数据少于pageSize，说明没有更多数据了
+            if (friends.value.length < pageSize) {
+                hasMoreFriends.value = false
+            }
+
+            // 成功提醒
+            handleToastMessage(FriendListResponse.data.msg)
+        } else {
+            // 失败提醒
+            handleToastMessage(FriendListResponse.data.msg)
+        }
+
+    } catch (error) {
+        // bug提醒
+        handleToastMessage('似乎出现了不可预知的bug')
+    } finally {
+        loading.value = false
+        loadingMore.value = false
     }
-    console.log(FriendListResponse)
-
-
 })
 
 onUnmounted(() => {
@@ -193,6 +238,7 @@ onUnmounted(() => {
         scrollContainer.value.removeEventListener('scroll', handleScroll)
     }
 })
+
 </script>
 
 <style scoped>

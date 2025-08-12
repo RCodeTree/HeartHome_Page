@@ -83,7 +83,7 @@ const showToast = (message, isSuccess) => {
 const handleChildMessage = (message) => {
     const isSuccess = message.includes('成功') ? true : false
     showToast(message, isSuccess)
-};
+}
 
 
 </script>
