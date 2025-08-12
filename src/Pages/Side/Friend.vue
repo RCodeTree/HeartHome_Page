@@ -225,7 +225,7 @@ onMounted(async () => {
         }
 
     } catch (error) {
-        // bug提醒
+        // bug提醒 --- 要么程序有问题，要么服务器停了
         handleToastMessage('似乎出现了不可预知的bug')
     } finally {
         loading.value = false
