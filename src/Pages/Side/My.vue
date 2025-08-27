@@ -1,99 +1,96 @@
 <template>
     <!-- Toast 通知组件 -->
     <ToastNotification ref="toastRef" />
-    <div class="container-fluid d-flex flex-column ps-lg-4 content-wrapper"
+    <div class="w-full flex flex-col lg:pl-4 content-wrapper"
         :class="{ 'container-expanded': isExpanded }">
-        <div class="content-area overflow-auto flex-grow-1">
+        <div class="content-area overflow-auto flex-grow">
             <!-- 用户信息卡片 -->
-            <div class="user-profile-card p-4 p-sm-3 bg-white bg-opacity-90 rounded-3 shadow my-4 position-relative">
-                <button @click="logout" class="btn btn-danger logout-btn position-absolute top-0 end-0 mt-3 me-3">
-                    <i class="bi bi-box-arrow-right"></i> 退出登录
+            <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-4 sm:p-6 my-4 relative">
+                <button @click="logout" class="absolute top-3 right-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center space-x-2 min-w-[44px] min-h-[44px]">
+                    <i class="text-sm">→</i> <span>退出登录</span>
                 </button>
-                <div class="row align-items-center">
-                    <div class="col-md-3 text-center">
-                        <div class="avatar-container mb-3 mb-md-0">
-                            <img v-lazy="userInfo?.avatarUrl" class="rounded-circle user-avatar" alt="用户头像">
+                <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="flex-shrink-0 text-center">
+                        <div class="mb-3 md:mb-0">
+                            <img v-lazy="userInfo?.avatarUrl" class="w-24 h-24 rounded-full object-cover border-4 border-blue-200" alt="用户头像">
                         </div>
                     </div>
-                    <div class="col-md-9">
-                        <h2 class="text-primary fw-bold mb-2">{{ userInfo?.username }}</h2>
-                        <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ userInfo?.address ||
-                            '心友很神秘获取不到地址🤡'
-                        }}
+                    <div class="flex-1 text-center md:text-left">
+                        <h2 class="text-2xl font-bold text-blue-600 mb-2">{{ userInfo?.username }}</h2>
+                        <p class="text-gray-600 mb-2 flex items-center justify-center md:justify-start">
+                            <i class="mr-1">📍</i>{{ userInfo?.address || '心友很神秘获取不到地址🤡' }}
                         </p>
-                        <p class="text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>加入于 {{ userInfo?.createTime }}
+                        <p class="text-gray-600 mb-3 flex items-center justify-center md:justify-start">
+                            <i class="mr-1">📅</i>加入于 {{ userInfo?.createTime }}
                         </p>
-                        <div class="user-stats d-flex flex-wrap mb-3">
-                            <div class="stat-item me-4">
-                                <span class="stat-value">{{ userInfo?.worksCount }}</span>
-                                <span class="stat-label">作品</span>
+                        <div class="flex flex-wrap justify-center md:justify-start space-x-6 mb-3">
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-gray-800">{{ userInfo?.worksCount }}</div>
+                                <div class="text-sm text-gray-600">作品</div>
                             </div>
-                            <div class="stat-item me-4">
-                                <span class="stat-value">{{ userInfo?.fansCount }}</span>
-                                <span class="stat-label">粉丝</span>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-gray-800">{{ userInfo?.fansCount }}</div>
+                                <div class="text-sm text-gray-600">粉丝</div>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-value">{{ userInfo?.followsCount }}</span>
-                                <span class="stat-label">关注</span>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-gray-800">{{ userInfo?.followsCount }}</div>
+                                <div class="text-sm text-gray-600">关注</div>
                             </div>
                         </div>
-                        <p class="user-bio">{{ userInfo?.personalDescription || '该心友很懒什么都没有写' }}</p>
+                        <p class="text-gray-700 leading-relaxed">{{ userInfo?.personalDescription || '该心友很懒什么都没有写' }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- 用户作品标签页 -->
-            <div class="works-container bg-white bg-opacity-90 rounded-3 shadow p-4 my-4">
-                <div class="tabs-wrapper overflow-auto">
-                    <ul class="nav nav-tabs mb-4 flex-nowrap" id="worksTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="all-tab" data-bs-toggle="tab"
-                                data-bs-target="#all-works" type="button" role="tab" aria-controls="all-works"
-                                aria-selected="true">
-                                心作
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles"
-                                type="button" role="tab" aria-controls="articles" aria-selected="false">
-                                心理文章
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos"
-                                type="button" role="tab" aria-controls="photos" aria-selected="false">
-                                治愈图片
-                            </button>
-                        </li>
-                    </ul>
+            <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-4 my-4">
+                <div class="overflow-x-auto">
+                    <div class="flex space-x-1 mb-4 border-b border-gray-200" role="tablist">
+                        <button class="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 bg-blue-50 rounded-t-lg min-h-[44px]" id="all-tab" data-bs-toggle="tab"
+                            data-bs-target="#all-works" type="button" role="tab" aria-controls="all-works"
+                            aria-selected="true">
+                            心作
+                        </button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles"
+                            type="button" role="tab" aria-controls="articles" aria-selected="false">
+                            心理文章
+                        </button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos"
+                            type="button" role="tab" aria-controls="photos" aria-selected="false">
+                            治愈图片
+                        </button>
+                    </div>
                 </div>
 
-                <div class="tab-content" id="worksTabContent">
+                <div id="worksTabContent">
                     <!-- 心作 -->
                     <div class="tab-pane fade show active" id="all-works" role="tabpanel" aria-labelledby="all-tab">
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" v-if="allWorks.length > 0">
-                            <div class="col" v-for="(work, index) in displayedWorks" :key="index">
-                                <div class="card h-100 work-card">
-                                    <img v-lazy="work.imageUrl" class="card-img-top work-image" :alt="work.title">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ work.title }}</h5>
-                                        <p class="card-text text-muted">{{ work.shortDesc }}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">{{ work.createTime.slice(0, 10) }}</small>
-                                            <div>
-                                                <span class="me-2"><i class="bi bi-heart"></i> {{ work.likesCount
-                                                }}</span>
-                                                <span><i class="bi bi-chat"></i> {{ work.commentsCount }}</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" v-if="allWorks.length > 0">
+                            <div v-for="(work, index) in displayedWorks" :key="index">
+                                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+                                    <img v-lazy="work.imageUrl" class="w-full h-48 object-cover" :alt="work.title">
+                                    <div class="p-4 flex-1 flex flex-col">
+                                        <h5 class="text-lg font-semibold text-gray-800 mb-2">{{ work.title }}</h5>
+                                        <p class="text-gray-600 text-sm mb-4 flex-1">{{ work.shortDesc }}</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">{{ work.createTime.slice(0, 10) }}</span>
+                                            <div class="flex space-x-3 text-gray-500">
+                                                <span class="flex items-center space-x-1">
+                                                    <i>❤️</i> <span>{{ work.likesCount }}</span>
+                                                </span>
+                                                <span class="flex items-center space-x-1">
+                                                    <i>💬</i> <span>{{ work.commentsCount }}</span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center mt-4" v-if="hasMoreWorks">
-                            <button class="btn btn-outline-primary load-more-btn" @click="loadMoreWorks"
+                        <div class="text-center mt-6" v-if="hasMoreWorks">
+                            <button class="px-6 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]" @click="loadMoreWorks"
                                 :disabled="isLoading">
-                                <span v-if="isLoading" class="spinner-border spinner-border-sm me-2"
+                                <span v-if="isLoading" class="inline-block w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"
                                     role="status"></span>
                                 {{ isLoading ? '加载中...' : '加载更多' }}
                             </button>

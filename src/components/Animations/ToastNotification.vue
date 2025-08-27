@@ -1,38 +1,40 @@
 <template>
-    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
-        <div ref="liveToastRef" id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div ref="toastBodyRef" class="toast-body text-center" id="toastBody">
-                <!-- 消息内容将在这里显示 -->
-            </div>
+    <Transition name="toast" appear>
+        <div v-if="isVisible" 
+             :class="[
+                 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-white text-center min-w-64 max-w-sm',
+                 isSuccess ? 'bg-green-500' : 'bg-red-500'
+             ]"
+             role="alert" 
+             aria-live="assertive" 
+             aria-atomic="true">
+            {{ message }}
         </div>
-    </div>
+    </Transition>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Toast } from 'bootstrap/dist/js/bootstrap.esm.min.js'
+import { ref } from 'vue'
 
-const liveToastRef = ref(null)
-const toastBodyRef = ref(null)
-let liveToastInstance = null
+const isVisible = ref(false)
+const message = ref('')
+const isSuccess = ref(true)
+let timeoutId = null
 
-onMounted(() => {
-    if (liveToastRef.value) {
-        liveToastInstance = new Toast(liveToastRef.value, { delay: 3000 })
+const showToast = (msg, success = true) => {
+    // 清除之前的定时器
+    if (timeoutId) {
+        clearTimeout(timeoutId)
     }
-})
-
-const showToast = (message, isSuccess) => {
-    if (toastBodyRef.value && liveToastInstance) {
-        toastBodyRef.value.innerText = message
-        liveToastRef.value.classList.remove('text-bg-success', 'text-bg-danger')
-        if (isSuccess) {
-            liveToastRef.value.classList.add('text-bg-success')
-        } else {
-            liveToastRef.value.classList.add('text-bg-danger')
-        }
-        liveToastInstance.show()
-    }
+    
+    message.value = msg
+    isSuccess.value = success
+    isVisible.value = true
+    
+    // 3秒后自动隐藏
+    timeoutId = setTimeout(() => {
+        isVisible.value = false
+    }, 3000)
 }
 
 defineExpose({
@@ -41,5 +43,18 @@ defineExpose({
 </script>
 
 <style scoped>
-/* 可以根据需要添加样式 */
+.toast-enter-active,
+.toast-leave-active {
+    transition: all 0.3s ease;
+}
+
+.toast-enter-from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+}
+
+.toast-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+}
 </style>

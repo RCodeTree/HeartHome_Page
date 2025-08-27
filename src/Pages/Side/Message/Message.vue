@@ -2,18 +2,22 @@
     <div class="message-container">
         <!-- 批量操作区域 -->
         <div
-            class="batch-operation-header sticky-top bg-white shadow-sm d-flex justify-content-between align-items-center mb-3 p-3 w-100">
-            <div class="form-check d-flex">
-                <input class="form-check-input" type="checkbox" v-model="showCheckboxes">
-                <label class="form-check-label ms-2 me-5">选择</label>
-                <input class="form-check-input" type="checkbox" v-model="allMessagesSelected"
-                    :disabled="!showCheckboxes">
-                <label class="form-check-label ms-2">全选</label>
+            class="batch-operation-header sticky top-0 bg-white shadow-sm flex justify-between items-center mb-3 p-3 w-full z-10">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center">
+                    <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" type="checkbox" v-model="showCheckboxes">
+                    <label class="ml-2 text-sm font-medium text-gray-700">选择</label>
+                </div>
+                <div class="flex items-center">
+                    <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 disabled:opacity-50" type="checkbox" v-model="allMessagesSelected"
+                        :disabled="!showCheckboxes">
+                    <label class="ml-2 text-sm font-medium text-gray-700">全选</label>
+                </div>
             </div>
-            <div class="btn-group">
-                <button class="btn btn-outline-primary btn-sm" @click="batchMarkAsRead"
+            <div class="flex space-x-2">
+                <button class="px-4 py-3 min-h-[44px] text-sm border border-blue-500 text-blue-500 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200" @click="batchMarkAsRead"
                     :disabled="!hasSelected">标记已读</button>
-                <button class="btn btn-outline-danger btn-sm" @click="batchDelete"
+                <button class="px-4 py-3 min-h-[44px] text-sm border border-red-500 text-red-500 rounded hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200" @click="batchDelete"
                     :disabled="!hasSelected">批量删除</button>
             </div>
         </div>
@@ -31,27 +35,27 @@
         </div>
 
         <!-- 消息列表 -->
-        <div class="list-group p-3">
+        <div class="p-3 space-y-2">
             <div v-for="message in messages" :key="message.id"
-                class="list-group-item list-group-item-action message-item"
+                class="bg-white border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200 message-item"
                 @contextmenu.prevent="showContextMenu($event, message)" @touchstart="handleTouchStart($event, message)"
                 @touchend="handleTouchEnd">
                 <!-- 消息内容 -->
-                <div class="d-flex justify-content-between align-items-center position-relative">
-                    <div class="form-check" v-show="showCheckboxes" @click.stop>
-                        <input class="form-check-input" type="checkbox" v-model="message.selected">
+                <div class="flex justify-between items-center relative">
+                    <div class="flex items-center" v-show="showCheckboxes" @click.stop>
+                        <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" type="checkbox" v-model="message.selected">
                     </div>
-                    <router-link to="/message/chat" class="text-decoration-none flex-grow-1">
-                        <div class="d-flex align-items-center justify-content-end">
+                    <router-link to="/message/chat" class="no-underline flex-1">
+                        <div class="flex items-center justify-end">
                             <div class="unread-dot" v-show="!message.isRead"></div>
-                            <div class="message-content me-3 text-black">
-                                <h6 class="mb-1">{{ message.nickname }}</h6>
-                                <small class="text-muted">{{ formatTime(message.timestamp) }}</small>
+                            <div class="message-content mr-3 text-black">
+                                <h6 class="mb-1 font-semibold text-gray-800">{{ message.nickname }}</h6>
+                                <small class="text-gray-500 text-sm">{{ formatTime(message.timestamp) }}</small>
                             </div>
                         </div>
                     </router-link>
                     <router-link to="/my" class="message-avatar" @click.stop>
-                        <img :src="message.avatar" :alt="message.nickname" class="rounded-circle" loading="lazy">
+                        <img :src="message.avatar" :alt="message.nickname" class="w-12 h-12 rounded-full object-cover" loading="lazy">
                     </router-link>
                 </div>
             </div>
@@ -59,10 +63,10 @@
 
         <!-- 加载中提示 -->
         <div v-if="loading && messages.length > 0" class="text-center mt-3 mb-4">
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="visually-hidden">加载中...</span>
+            <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" role="status">
+                <span class="sr-only">加载中...</span>
             </div>
-            <span class="ms-2">加载中...</span>
+            <span class="ml-2 text-gray-600">加载中...</span>
         </div>
 
         <!-- 上下文菜单 -->

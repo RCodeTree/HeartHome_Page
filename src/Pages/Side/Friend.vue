@@ -1,60 +1,54 @@
 <template>
     <ToastNotification ref="toastNotificationForFriend" />
     <div class="friend-list-container" ref="scrollContainer">
-        <div class="friend-header sticky-top bg-white shadow-sm">
-            <h2 class="friend-list-title">心友</h2>
+        <div class="friend-header sticky top-0 bg-white shadow-sm z-10 p-4 border-b border-gray-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-3">心友</h2>
 
             <!-- 添加好友按钮和搜索框 -->
-            <div class="friend-actions">
-                <div v-show="!isSearching" class="add-friend-btn" @click="toggleSearch" title="添加好友">
-                    <i class="add-icon"></i>
+            <div class="friend-actions flex items-center justify-between">
+                <div v-show="!isSearching" class="min-w-[44px] min-h-[44px] w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200" @click="toggleSearch" title="添加好友">
+                    <i class="text-white text-lg font-bold">+</i>
                 </div>
-                <div v-show="isSearching" class="search-container">
-                    <input type="text" v-model="searchQuery" class="search-input" placeholder="搜索好友..."
+                <div v-show="isSearching" class="flex items-center space-x-2 flex-1">
+                    <input type="text" v-model="searchQuery" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="搜索好友..."
                         @keyup.enter="searchFriends" ref="searchInput">
-                    <button class="search-btn" @click="searchFriends">搜索</button>
-                    <button class="cancel-btn" @click="toggleSearch">取消</button>
+                    <button class="min-h-[44px] px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200" @click="searchFriends">搜索</button>
+                    <button class="min-h-[44px] px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200" @click="toggleSearch">取消</button>
                 </div>
             </div>
         </div>
 
         <!-- 骨架屏 -->
-        <div v-if="loading" class="skeleton-container">
-            <div v-for="i in 10" :key="i" class="skeleton-item">
-                <div class="skeleton-avatar"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-name"></div>
-                    <div class="skeleton-status"></div>
+        <div v-if="loading" class="p-4 space-y-4">
+            <div v-for="i in 10" :key="i" class="flex items-center space-x-3 p-3 animate-pulse">
+                <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+                <div class="flex-1 space-y-2">
+                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div class="h-3 bg-gray-300 rounded w-1/2"></div>
                 </div>
             </div>
         </div>
 
         <!-- 好友列表 -->
-        <transition-group name="friend-list" tag="div" class="friends-container">
-            <div v-for="friend in displayedFriends" :key="friend.username" class="friend-item"
+        <transition-group name="friend-list" tag="div" class="p-4 space-y-2">
+            <div v-for="friend in displayedFriends" :key="friend.username" class="flex items-center space-x-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
                 @click="selectFriend(friend)">
-                <img :src="friend.avatarUrl" :alt="friend.username" class="friend-avatar">
-                <div class="friend-info">
-                    <span class="friend-name">{{ friend.username }}</span>
-                    <span class="friend-status-time">
-                        <span class="friend-status" :class="friend.status == 1 ? 'online' : 'offline'">
-                            {{ friend.status == 1 ? '在线' : formatLastActiveTime(Date.now()) }}
-
-                        </span>
-                    </span>
+                <img :src="friend.avatarUrl" :alt="friend.username" class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
+                <div class="flex-1 min-w-0">
+                    <div class="font-medium text-gray-900 truncate">{{ friend.username }}</div>
+                    <div class="text-sm" :class="friend.status == 1 ? 'text-green-600' : 'text-gray-500'">
+                        {{ friend.status == 1 ? '在线' : formatLastActiveTime(Date.now()) }}
+                    </div>
                 </div>
-                </img>
             </div>
         </transition-group>
 
         <!-- 加载中提示 -->
-        <div>
-            <div v-if="loadingMore && friends.length > 0" class="text-center mt-3 mb-4">
-                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">加载中...</span>
-                </div>
-                <span class="ms-2">加载中...</span>
+        <div v-if="loadingMore && friends.length > 0" class="text-center py-4">
+            <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" role="status">
+                <span class="sr-only">加载中...</span>
             </div>
+            <span class="ml-2 text-gray-600">加载中...</span>
         </div>
     </div>
 </template>

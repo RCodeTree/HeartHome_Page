@@ -1,9 +1,9 @@
 <template>
-    <div class="container-fluid d-flex flex-column ps-lg-4 content-wrapper">
-        <div class="content-area overflow-auto flex-grow-1">
-            <div class="text-center p-4 p-sm-3 bg-white bg-opacity-90 rounded-3 shadow custom-card my-4">
-                <h2 class="text-primary fw-bold mb-3 mobile-title">欢迎访问我们的网站</h2>
-                <p class="text-secondary fs-5 mobile-text">这里是网站的主要内容区域，您可以在这里展示重要信息。</p>
+    <div class="w-full flex flex-col lg:pl-4 content-wrapper">
+        <div class="content-area overflow-auto flex-1">
+            <div class="text-center p-4 sm:p-3 bg-white/90 rounded-2xl shadow-lg custom-card my-4">
+                <h2 class="text-blue-600 font-bold mb-3 mobile-title">欢迎访问我们的网站</h2>
+                <p class="text-gray-600 text-xl mobile-text">这里是网站的主要内容区域，您可以在这里展示重要信息。</p>
             </div>
 
         </div>

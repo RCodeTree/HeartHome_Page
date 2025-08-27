@@ -7,13 +7,13 @@
         <div class="login-card-container">
             <div class="login-card">
                 <!-- 卡片头部 -->
-                <div class="card-header text-center">
-                    <div class="tabs">
-                        <button :class="['tab-btn', { active: activeTab === 'signin' }]"
+                <div class="text-center border-b border-gray-200 pb-4 mb-6">
+                    <div class="flex justify-center space-x-1 bg-gray-100 rounded-lg p-1">
+                        <button :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signin' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
                             @click="setActiveTab('signin')">
                             登录
                         </button>
-                        <button :class="['tab-btn', { active: activeTab === 'signup' }]"
+                        <button :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signup' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
                             @click="setActiveTab('signup')">
                             注册
                         </button>
@@ -21,7 +21,7 @@
                 </div>
 
                 <!-- 卡片内容 -->
-                <div class="card-body">
+                <div class="px-6 pb-6">
                     <Transition name="fade" mode="out-in">
                         <KeepAlive>
                             <component :is="activeComponent" @message="handleChildMessage" />
@@ -96,7 +96,7 @@ const handleChildMessage = (message) => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, theme('colors.custom.blue') 0%, theme('colors.custom.purple') 100%);
     padding: 20px;
 }
 
@@ -159,7 +159,7 @@ const handleChildMessage = (message) => {
 
 /* --- 卡片头部与标签页按钮样式 --- */
 .card-header {
-    background: linear-gradient(to right, #667eea, #764ba2);
+    background: linear-gradient(to right, theme('colors.custom.blue'), theme('colors.custom.purple'));
     color: white;
     padding: 20px;
     border-bottom: none;

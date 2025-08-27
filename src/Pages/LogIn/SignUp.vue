@@ -1,43 +1,48 @@
 <template>
     <div>
         <form @submit.prevent="handleRegister" class="register-form">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="reg-username" placeholder="昵称"
-                    v-model="registerForm.username" :class="{ 'is-invalid': registerErrors.username }" required />
-                <label for="reg-username">昵称</label>
-                <div class="invalid-feedback" v-if="registerErrors.username">
+            <div class="relative mb-6">
+                <input type="text" id="reg-username" placeholder=" " v-model="registerForm.username" 
+                    :class="{ 'border-red-500': registerErrors.username }" 
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-custom-blue peer transition-all duration-300" required />
+                <label for="reg-username" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-custom-blue peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">昵称</label>
+                <div class="text-red-500 text-sm mt-1 animate-slide-up" v-if="registerErrors.username">
                     {{ registerErrors.username }}
                 </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input :type="showPassword ? 'text' : 'password'" class="form-control" id="reg-password"
-                    placeholder="密码" v-model="registerForm.password" :class="{ 'is-invalid': registerErrors.password }"
-                    required />
-                <label for="reg-password">密码</label>
-                <span class="password-toggle" @click="togglePassword">
-                    <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            <div class="relative mb-6">
+                <input :type="showPassword ? 'text' : 'password'" id="reg-password" placeholder=" " v-model="registerForm.password" 
+                    :class="{ 'border-red-500': registerErrors.password }" 
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-custom-blue peer transition-all duration-300" required />
+                <label for="reg-password" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-custom-blue peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">密码</label>
+                <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" @click="togglePassword">
+                    <EyeIcon v-if="!showPassword" class="w-5 h-5 text-gray-400 hover:text-custom-blue transition-colors duration-200 transform hover:scale-110" />
+                    <EyeSlashIcon v-else class="w-5 h-5 text-gray-400 hover:text-custom-blue transition-colors duration-200 transform hover:scale-110" />
                 </span>
-                <div class="invalid-feedback" v-if="registerErrors.password">
+                <div class="text-red-500 text-sm mt-1 animate-slide-up" v-if="registerErrors.password">
                     {{ registerErrors.password }}
                 </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input :type="showPassword ? 'text' : 'password'" class="form-control" id="reg-confirm-password"
-                    placeholder="确认密码" v-model="registerForm.confirmPassword"
-                    :class="{ 'is-invalid': registerErrors.confirmPassword }" required />
-                <label for="reg-confirm-password">确认密码</label>
-                <div class="invalid-feedback" v-if="registerErrors.confirmPassword">
+            <div class="relative mb-6">
+                <input :type="showConfirmPassword ? 'text' : 'password'" id="reg-confirm-password" placeholder=" " v-model="registerForm.confirmPassword" 
+                    :class="{ 'border-red-500': registerErrors.confirmPassword }" 
+                    class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-custom-blue peer transition-all duration-300" required />
+                <label for="reg-confirm-password" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-custom-blue peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">确认密码</label>
+                <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" @click="toggleConfirmPassword">
+                    <EyeIcon v-if="!showConfirmPassword" class="w-5 h-5 text-gray-400 hover:text-custom-blue transition-colors duration-200 transform hover:scale-110" />
+                    <EyeSlashIcon v-else class="w-5 h-5 text-gray-400 hover:text-custom-blue transition-colors duration-200 transform hover:scale-110" />
+                </span>
+                <div class="text-red-500 text-sm mt-1 animate-slide-up" v-if="registerErrors.confirmPassword">
                     {{ registerErrors.confirmPassword }}
                 </div>
             </div>
 
 
 
-            <button type="submit" class="btn btn-primary w-100" :disabled="isLoading">
-                <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status"
-                    aria-hidden="true"></span>
+            <button type="submit" class="w-full text-white bg-custom-blue hover:bg-custom-blue-dark focus:ring-4 focus:outline-none focus:ring-custom-blue/30 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 active:scale-95" :disabled="isLoading">
+                <span v-if="isLoading" class="inline-block w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-hidden="true"></span>
                 {{ isLoading ? '注册中...' : '注册' }}
             </button>
         </form>
@@ -46,6 +51,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
 import { SignUpService } from '../../Service/User/UserService'
 import { useRouter } from 'vue-router'
 import { loginStore } from '../../stores/HeartHomeStore'
@@ -57,6 +63,7 @@ const store = loginStore()
 const emit = defineEmits(['message'])
 
 const showPassword = ref(false) // 密码显示状态
+const showConfirmPassword = ref(false) // 确认密码显示状态
 const isLoading = ref(false) // 注册按钮加载状态
 
 const registerForm = reactive({
@@ -74,6 +81,10 @@ const registerErrors = reactive({
 
 const togglePassword = () => { // 切换密码显示状态
     showPassword.value = !showPassword.value
+}
+
+const toggleConfirmPassword = () => { // 切换确认密码显示状态
+    showConfirmPassword.value = !showConfirmPassword.value
 }
 
 const validateRegisterForm = () => { // 验证注册表单
@@ -156,47 +167,5 @@ const handleRegister = async () => {
 <style scoped>
 .register-form {
     width: 100%;
-}
-
-.form-control {
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
-    border-color: #667eea;
-}
-
-.password-toggle {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #6c757d;
-    z-index: 10;
-}
-
-.form-check-label {
-    user-select: none;
-}
-
-.btn-primary {
-    background-color: #667eea;
-    border-color: #667eea;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #5a6fd1;
-    border-color: #5a6fd1;
-}
-
-.btn-primary:disabled {
-    background-color: #667eea;
-    border-color: #667eea;
-    opacity: 0.65;
 }
 </style>

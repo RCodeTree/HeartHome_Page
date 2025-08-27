@@ -3,11 +3,11 @@
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div class="clouds"></div>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-      <div class="text-center bg-white p-5 rounded shadow-lg animated-content">
-        <h1 class="display-1 fw-bold text-danger animated-404">404</h1>
-        <p class="fs-3 animated-text"> <span class="text-danger">Opps!</span> 页面未找到</p>
-        <p class="lead animated-text">
+    <div class="flex justify-center items-center h-screen">
+      <div class="text-center bg-white p-8 rounded-2xl shadow-2xl animated-content max-w-md mx-4">
+        <h1 class="text-8xl font-bold text-red-500 animated-404 mb-4">404</h1>
+        <p class="text-2xl animated-text mb-4"> <span class="text-red-500">Opps!</span> 页面未找到</p>
+        <p class="text-lg text-gray-600 animated-text">
           抱歉，您访问的页面不存在
         </p>
       </div>

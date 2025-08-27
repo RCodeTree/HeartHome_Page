@@ -1,45 +1,47 @@
 <template>
-    <nav class="navbar navbar-expand-lg shadow-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand text-white" href="#">Logo</a>
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" @click="handleMoblie()"
-                data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
+    <nav class="gradient-bg shadow-lg">
+        <div class="w-full px-4">
+            <a class="text-white font-bold text-xl" href="#">Logo</a>
+            <button class="ml-auto lg:hidden p-2 min-w-[44px] min-h-[44px] flex flex-col justify-center items-center" type="button" @click="handleMoblie()">
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white"></span>
             </button>
-            <div class=" offcanvas offcanvas-end" id="offcanvasNavbar">
-                <div class="offcanvas-header navbar">
-                    <h5 class=" offcanvas-title text-white">菜单</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                        @click="handleMoblie()"></button>
+            <div class="fixed top-0 right-0 h-full w-4/5 bg-white/95 backdrop-blur-md transform transition-transform duration-300 z-50" 
+                 :class="{ 'translate-x-0': isMobile, 'translate-x-full': !isMobile }" id="offcanvasNavbar">
+                <div class="gradient-bg p-4 flex justify-between items-center">
+                    <h5 class="text-white font-bold text-lg">菜单</h5>
+                    <button type="button" class="text-white text-2xl p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" @click="handleMoblie()">&times;</button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="p-4">
                     <!-- 非移动端 -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-show="isMobile === false">
-                        <li class="nav-item">
-                            <router-link to="/home" class="nav-link text-white">首页</router-link>
+                    <ul class="hidden lg:flex ml-auto space-x-4" v-show="isMobile === false">
+                        <li>
+                            <router-link to="/home" class="text-white hover:text-blue-200 font-bold transition-colors duration-300">首页</router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/service" class="nav-link text-white">服务</router-link>
+                        <li>
+                            <router-link to="/service" class="text-white hover:text-blue-200 font-bold transition-colors duration-300">服务</router-link>
                         </li>
                     </ul>
 
                     <!-- 移动端 -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-show="isMobile === true">
+                    <ul class="space-y-4" v-show="isMobile === true">
                         <!-- 搜索框 -->
-                        <li class="search-container nav-item">
-                            <input type="text" class="form-control" placeholder="搜索..." ref="searchInput" autofocus>
+                        <li class="search-container">
+                            <input type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300" 
+                                   placeholder="搜索..." ref="searchInput" autofocus>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/message" class="nav-link text-dark">消息</router-link>
+                        <li>
+                            <router-link to="/message" class="block text-gray-800 hover:text-blue-600 font-medium py-2 transition-colors duration-300">消息</router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/friend" class="nav-link text-dark">心友</router-link>
+                        <li>
+                            <router-link to="/friend" class="block text-gray-800 hover:text-blue-600 font-medium py-2 transition-colors duration-300">心友</router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/service" class="nav-link text-dark">服务</router-link>
+                        <li>
+                            <router-link to="/service" class="block text-gray-800 hover:text-blue-600 font-medium py-2 transition-colors duration-300">服务</router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/about" class="nav-link text-dark">关于</router-link>
+                        <li>
+                            <router-link to="/about" class="block text-gray-800 hover:text-blue-600 font-medium py-2 transition-colors duration-300">关于</router-link>
                         </li>
                     </ul>
                 </div>
@@ -82,91 +84,34 @@ onMounted(() => {
     position: relative;
 }
 
-.search-container .form-control {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #333;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.search-container .form-control::placeholder {
-    color: rgba(0, 0, 0, 0.6);
-}
-
-.search-container .form-control:focus {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
-    color: #333;
-}
-
-/* 自定义offcanvas样式，使其不完全覆盖页面 */
-.offcanvas {
-    width: 80% !important;
-    /* 控制菜单宽度为屏幕的80% */
-    background-color: rgba(255, 255, 255, 0.95);
-    /* 半透明背景 */
-    backdrop-filter: blur(5px);
-    /* 背景模糊效果 */
-}
-
-.navbar {
-    background-image: linear-gradient(to right, #667eea, #5c78f6);
-    background-size: 400% 400%;
-    animation: gradientFlow 8s ease infinite;
-    transition: all 0.5s ease;
-}
-
-@keyframes gradientFlow {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.nav-link::after {
-    background-color: #a1c4fd;
-}
-
-.nav-link {
+/* 导航链接悬停效果 */
+a {
     position: relative;
-    font-weight: bolder;
 }
 
-.nav-link::after {
+a::after {
     content: '';
     position: absolute;
     width: 0;
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: powderblue;
+    background-color: #a1c4fd;
     transition: width 0.3s ease;
 }
 
-.nav-link:hover::after {
+a:hover::after {
     width: 100%;
 }
 
-/* 移动端菜单样式优化 */
-@media (max-width: 991.98px) {
-    .offcanvas-header {
-        padding: 0.75rem 1rem;
-        /* 减小头部内边距 */
-    }
-
-    .offcanvas-body {
-        padding: 1rem;
-        /* 调整内容区内边距 */
-    }
+/* 移动端菜单背景遮罩 */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
 }
 </style>

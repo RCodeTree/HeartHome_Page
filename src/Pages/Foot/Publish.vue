@@ -41,18 +41,18 @@
                                 <p class="mt-2">拖拽图片到此处或点击上传</p>
                                 <input type="file" class="d-none" ref="fileInput" @change="handleFileSelect" multiple
                                     accept="image/*">
-                                <button type="button" class="btn btn-outline-primary" @click="$refs.fileInput.click()">
+                                <button type="button" class="btn btn-outline-primary min-h-[44px] px-4" @click="$refs.fileInput.click()">
                                     选择图片
                                 </button>
                             </div>
                             <div v-else class="image-preview-container">
                                 <div v-for="(image, index) in formData.images" :key="index" class="image-preview-item">
                                     <img :src="image.url" class="img-thumbnail" alt="Preview">
-                                    <button type="button" class="btn-close" @click="removeImage(index)"></button>
+                                    <button type="button" class="btn-close min-w-[44px] min-h-[44px] flex items-center justify-center" @click="removeImage(index)"></button>
                                 </div>
                                 <input type="file" class="d-none" ref="fileInput" @change="handleFileSelect" multiple
                                     accept="image/*">
-                                <div class="add-more-images" @click="$refs.fileInput.click()">
+                                <div class="add-more-images min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer" @click="$refs.fileInput.click()">
                                     <i class="bi bi-plus-lg"></i>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
 
                     <!-- 提交按钮 -->
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary btn-lg" :disabled="isSubmitting">
+                        <button type="submit" class="btn btn-primary btn-lg min-h-[44px] px-6" :disabled="isSubmitting">
                             <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
                             {{ isSubmitting ? '发布中...' : '发布作品' }}
                         </button>
