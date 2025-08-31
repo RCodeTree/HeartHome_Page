@@ -1,6 +1,9 @@
 <template>
+  <!-- 触发区域 -->
+  <div class="hidden lg:block fixed left-0 top-14 bottom-14 w-4 z-30" @mouseenter="showNav()"></div>
+  
   <!-- 导航栏 -->
-  <nav class="hidden lg:flex h-full flex-col items-center fixed left-0 top-14 z-30 w-64 bg-white/90 backdrop-blur-md shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out"
+  <nav class="hidden lg:flex flex-col items-center fixed left-0 top-14 bottom-14 z-40 w-64 bg-white/90 backdrop-blur-md shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out"
     :class="{ 'nav-expanded': isExpanded }" @mouseenter="showNav()" @mouseleave="hideNav()">
     <div class="w-full p-4 flex flex-col h-full">
       <ul class="flex flex-col w-full space-y-2">
@@ -41,13 +44,22 @@ import { ref } from 'vue'
  */
 // 控制导航栏展开状态
 const isExpanded = ref(false)
+let hideTimer = null
+
 // 显示导航栏
 const showNav = () => {
+  if (hideTimer) {
+    clearTimeout(hideTimer)
+    hideTimer = null
+  }
   isExpanded.value = true
 }
-// 隐藏导航栏
+
+// 隐藏导航栏（延迟隐藏）
 const hideNav = () => {
-  isExpanded.value = false
+  hideTimer = setTimeout(() => {
+    isExpanded.value = false
+  }, 300) // 300ms延迟隐藏
 }
 </script>
 
@@ -55,16 +67,19 @@ const hideNav = () => {
 /* 侧边导航栏样式 */
 .nav-expanded {
   transform: translateX(0) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* 导航栏悬停效果 */
 nav:hover {
   transform: translateX(0);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* 默认隐藏状态 */
 nav {
-  transform: translateX(-200px);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
 
 /* 激活状态的链接样式 */

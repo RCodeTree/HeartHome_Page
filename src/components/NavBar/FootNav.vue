@@ -1,6 +1,6 @@
 <template>
     <!-- 底部导航栏 -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-500 to-blue-600">
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-500 to-blue-600 h-14">
         <div class="w-full">
             <!-- PC端导航内容 -->
             <div class="flex w-full justify-between items-center hidden lg:flex">

@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .content-wrapper {
     width: 100%;
-    height: calc(100vh - 90px);
+    min-height: 100%;
     overflow: hidden;
     padding-bottom: 20px;
     transition: all 0.3s ease;

@@ -116,7 +116,7 @@ const processSteps = [
 .service-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 90px);
+    min-height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 20px;
@@ -151,8 +151,6 @@ const processSteps = [
 /* 移动端样式优化 */
 @media (max-width: 991.98px) {
     .service-container {
-        height: calc(100vh - 120px);
-        /* 增加底部导航栏的空间 */
         padding-bottom: 60px;
         /* 确保内容不被底部导航栏遮挡 */
     }

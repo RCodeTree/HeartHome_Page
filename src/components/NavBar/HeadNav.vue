@@ -1,5 +1,5 @@
 <template>
-    <nav class="gradient-bg shadow-lg">
+    <nav class="gradient-bg shadow-lg fixed top-0 left-0 right-0 z-50 h-14">
         <div class="w-full px-4">
             <a class="text-white font-bold text-xl" href="#">Logo</a>
             <button class="ml-auto lg:hidden p-2 min-w-[44px] min-h-[44px] flex flex-col justify-center items-center" type="button" @click="handleMoblie()">

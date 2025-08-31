@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-col lg:pl-4 content-wrapper">
+    <div class="w-full flex flex-col content-wrapper">
         <div class="content-area overflow-auto flex-1">
             <div class="text-center p-4 sm:p-3 bg-white/90 rounded-2xl shadow-lg custom-card my-4">
                 <h2 class="text-blue-600 font-bold mb-3 mobile-title">欢迎访问我们的网站</h2>
@@ -15,12 +15,9 @@
 
 <style scoped>
 .content-wrapper {
-    height: calc(100vh - 56px - 56px);
-    /* 减去顶部和底部导航栏的高度 */
+    min-height: 100%;
     position: relative;
-    /* 添加相对定位 */
     overflow: hidden;
-    /* 防止内容溢出 */
 }
 
 .content-area {
