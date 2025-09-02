@@ -120,7 +120,7 @@ const handleLogin = async () => {
     const loginCode = response.data.code // 后端返回的状态码
     // --- 处理登录失败逻辑 ---
     if (loginCode == 500) {
-        emit('message', response.data.msg)
+        emit('message', { message: response.data.msg, isSuccess: false })
         isLoading.value = false
         loginForm.username = ''
         loginForm.password = ''

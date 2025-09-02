@@ -1,18 +1,17 @@
 <template>
-    <!-- Toast 通知组件 -->
-    <ToastNotification ref="toastRef" />
-    <div class="w-full flex flex-col lg:pl-4 content-wrapper"
-        :class="{ 'container-expanded': isExpanded }">
+    <div class="w-full flex flex-col lg:pl-4 content-wrapper" :class="{ 'container-expanded': isExpanded }">
         <div class="content-area overflow-auto flex-grow">
             <!-- 用户信息卡片 -->
             <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-4 sm:p-6 my-4 relative">
-                <button @click="logout" class="absolute top-3 right-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center space-x-2 min-w-[44px] min-h-[44px]">
+                <button @click="logout"
+                    class="absolute top-3 right-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center space-x-2 min-w-[44px] min-h-[44px]">
                     <i class="text-sm">→</i> <span>退出登录</span>
                 </button>
                 <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
                     <div class="flex-shrink-0 text-center">
                         <div class="mb-3 md:mb-0">
-                            <img v-lazy="userInfo?.avatarUrl" class="w-24 h-24 rounded-full object-cover border-4 border-blue-200" alt="用户头像">
+                            <img v-lazy="userInfo?.avatarUrl"
+                                class="w-24 h-24 rounded-full object-cover border-4 border-blue-200" alt="用户头像">
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-left">
@@ -37,7 +36,8 @@
                                 <div class="text-sm text-gray-600">关注</div>
                             </div>
                         </div>
-                        <p class="text-gray-700 leading-relaxed">{{ userInfo?.personalDescription || '该心友很懒什么都没有写' }}</p>
+                        <p class="text-gray-700 leading-relaxed">{{ userInfo?.personalDescription || '该心友很懒什么都没有写' }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -46,17 +46,22 @@
             <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-4 my-4">
                 <div class="overflow-x-auto">
                     <div class="flex space-x-1 mb-4 border-b border-gray-200" role="tablist">
-                        <button class="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 bg-blue-50 rounded-t-lg min-h-[44px]" id="all-tab" data-bs-toggle="tab"
-                            data-bs-target="#all-works" type="button" role="tab" aria-controls="all-works"
-                            aria-selected="true">
+                        <button
+                            class="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 bg-blue-50 rounded-t-lg min-h-[44px]"
+                            id="all-tab" data-bs-toggle="tab" data-bs-target="#all-works" type="button" role="tab"
+                            aria-controls="all-works" aria-selected="true">
                             心作
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles"
-                            type="button" role="tab" aria-controls="articles" aria-selected="false">
+                        <button
+                            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]"
+                            id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles" type="button" role="tab"
+                            aria-controls="articles" aria-selected="false">
                             心理文章
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos"
-                            type="button" role="tab" aria-controls="photos" aria-selected="false">
+                        <button
+                            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-t-lg transition-colors duration-200 min-h-[44px]"
+                            id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab"
+                            aria-controls="photos" aria-selected="false">
                             治愈图片
                         </button>
                     </div>
@@ -67,7 +72,8 @@
                     <div class="tab-pane fade show active" id="all-works" role="tabpanel" aria-labelledby="all-tab">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" v-if="allWorks.length > 0">
                             <div v-for="(work, index) in displayedWorks" :key="index">
-                                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+                                <div
+                                    class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
                                     <img v-lazy="work.imageUrl" class="w-full h-48 object-cover" :alt="work.title">
                                     <div class="p-4 flex-1 flex flex-col">
                                         <h5 class="text-lg font-semibold text-gray-800 mb-2">{{ work.title }}</h5>
@@ -88,9 +94,11 @@
                             </div>
                         </div>
                         <div class="text-center mt-6" v-if="hasMoreWorks">
-                            <button class="px-6 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]" @click="loadMoreWorks"
-                                :disabled="isLoading">
-                                <span v-if="isLoading" class="inline-block w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"
+                            <button
+                                class="px-6 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+                                @click="loadMoreWorks" :disabled="isLoading">
+                                <span v-if="isLoading"
+                                    class="inline-block w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"
                                     role="status"></span>
                                 {{ isLoading ? '加载中...' : '加载更多' }}
                             </button>
@@ -112,9 +120,14 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">{{ article.createTime.slice(0, 10) }}</small>
                                             <div>
-                                                <span class="me-2"><HeartIcon class="w-4 h-4 inline" /> {{ article.likesCount
-                                                }}</span>
-                                                <span><ChatBubbleLeftIcon class="w-4 h-4 inline" /> {{ article.commentsCount }}</span>
+                                                <span class="me-2">
+                                                    <HeartIcon class="w-4 h-4 inline" /> {{ article.likesCount
+                                                    }}
+                                                </span>
+                                                <span>
+                                                    <ChatBubbleLeftIcon class="w-4 h-4 inline" /> {{
+                                                    article.commentsCount }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +173,7 @@ import { UserWorksService } from '../../Service/Works/WorksService'
 import { UserEssaysService } from '../../Service/Works/WorksService'
 import { UserPhotosService } from '../../Service/Works/WorksService'
 import { vLazy } from '@/directives/lazy.js'
-import ToastNotification from '@/components/Animations/ToastNotification.vue'
+// 移除本地ToastNotification导入，使用全局实例
 import { InboxIcon, HeartIcon, ChatBubbleLeftIcon, DocumentTextIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
 
@@ -181,7 +194,7 @@ let userInfo = ref(null)
 /*
  Toast 通知引用
  */
-const toastRef = ref(null)
+// 移除本地toast引用，使用全局事件
 
 // 退出登录方法
 const logout = () => {
@@ -252,9 +265,10 @@ onMounted(async () => {
     // 检查用户信息是否过期
     if (UserInfoResponse.data.code === 401 || !userInfo.value || userInfo.value === 'undefined') {
         // 显示错误提示
-        if (toastRef.value) {
-            toastRef.value.showToast(`用户${UserInfoResponse.data.msg}，获取用户信息失败，3秒后自动跳转`, false)
-        }
+        // 使用全局toast事件
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: `用户${UserInfoResponse.data.msg}，获取用户信息失败，3秒后自动跳转`, type: 'error' }
+        }))
 
         // 做三秒延时
         setTimeout(() => {

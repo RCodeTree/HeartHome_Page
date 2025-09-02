@@ -140,7 +140,7 @@ const handleRegister = async () => {
 
     // --- 处理注册失败逻辑 ---
     if (registerCode == 500) {
-        emit('message', registerData.msg)
+        emit('message', { message: registerData.msg, isSuccess: false })
         isLoading.value = false
         registerForm.username = ''
         registerForm.password = ''
@@ -150,7 +150,7 @@ const handleRegister = async () => {
 
     // --- 处理注册成功逻辑 ---
     if (registerCode == 200) {
-        emit('message', registerData.msg)
+        emit('message', { message: registerData.msg, isSuccess: true })
         isLoading.value = false
         registerForm.username = ''
         registerForm.password = ''

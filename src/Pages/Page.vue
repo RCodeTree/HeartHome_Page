@@ -19,7 +19,7 @@ import FootNav from '../components/NavBar/FootNav.vue'
     margin-bottom: 56px; /* 底部导航栏高度 */
     min-height: calc(100vh - 112px); /* 确保内容区域至少占满剩余高度 */
     position: relative;
-    z-index: 10; /* 确保内容在导航栏下方 */
+    z-index: 1; /* 确保内容在导航栏下方，但不影响toast显示 */
 }
 
 /* 大屏幕时为侧边导航栏留出空间 */

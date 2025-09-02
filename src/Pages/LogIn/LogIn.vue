@@ -1,5 +1,4 @@
 <template>
-    <ToastNotification ref="toastNotificationForLogin" />
     <div class="login-container" ref="containerRef">
         <div class="slogan-container" v-if="showSlogan">
             <h1 class="slogan-text">你的心灵之所</h1>
@@ -9,11 +8,13 @@
                 <!-- 卡片头部 -->
                 <div class="text-center border-b border-gray-200 pb-4 mb-6">
                     <div class="flex justify-center space-x-1 bg-gray-100 rounded-lg p-1">
-                        <button :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signin' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
+                        <button
+                            :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signin' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
                             @click="setActiveTab('signin')">
                             登录
                         </button>
-                        <button :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signup' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
+                        <button
+                            :class="['px-6 py-2 rounded-md text-sm font-medium transition-all duration-200', activeTab === 'signup' ? 'bg-white text-custom-blue shadow-sm' : 'text-gray-600 hover:text-custom-blue']"
                             @click="setActiveTab('signup')">
                             注册
                         </button>
@@ -39,7 +40,7 @@ import { ref, onMounted, computed } from 'vue'
 import SignIn from './SignIn.vue'
 import SignUp from './SignUp.vue'
 import router from '../../router/router'
-import ToastNotification from '../../components/Animations/ToastNotification.vue'
+// 移除本地ToastNotification导入，使用全局实例
 
 // 当前激活的标签页
 const activeTab = ref('signin')
@@ -72,17 +73,22 @@ onMounted(() => {
 })
 
 // 吐司消息
-const toastNotificationForLogin = ref(null)
-
+// 使用全局toast事件
 const showToast = (message, isSuccess) => {
-    if (toastNotificationForLogin.value) {
-        toastNotificationForLogin.value.showToast(message, isSuccess)
-    }
+    window.dispatchEvent(new CustomEvent('show-toast', {
+        detail: { message, type: isSuccess ? 'success' : 'error' }
+    }))
 }
 
-const handleChildMessage = (message) => {
-    const isSuccess = message.includes('成功') ? true : false
-    showToast(message, isSuccess)
+const handleChildMessage = (messageData) => {
+    // 处理新的消息格式：{ message: string, isSuccess: boolean }
+    if (typeof messageData === 'object' && messageData.message) {
+        showToast(messageData.message, messageData.isSuccess)
+    } else {
+        // 兼容旧格式：直接是字符串消息
+        const isSuccess = messageData.includes('成功') ? true : false
+        showToast(messageData, isSuccess)
+    }
 }
 
 
