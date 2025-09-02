@@ -9,25 +9,25 @@
       <ul class="flex flex-col w-full space-y-2">
         <li>
           <router-link to="/message" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg transition-all duration-300 font-medium group">
-            <i class="bi bi-chat-dots-fill mr-3 text-lg group-hover:scale-110 transition-transform duration-300"></i>
+            <ChatBubbleLeftRightIcon class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
             <span>消息</span>
           </router-link>
         </li>
         <li>
           <router-link to="/friend" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg transition-all duration-300 font-medium group">
-            <i class="bi bi-people-fill mr-3 text-lg group-hover:scale-110 transition-transform duration-300"></i>
+            <UsersIcon class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
             <span>心友</span>
           </router-link>
         </li>
         <li>
           <router-link to="/my" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg transition-all duration-300 font-medium group">
-            <i class="bi bi-person-fill mr-3 text-lg group-hover:scale-110 transition-transform duration-300"></i>
+            <UserIcon class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
             <span>我的</span>
           </router-link>
         </li>
         <li>
           <router-link to="/about" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg transition-all duration-300 font-medium group">
-            <i class="bi bi-info-circle-fill mr-3 text-lg group-hover:scale-110 transition-transform duration-300"></i>
+            <InformationCircleIcon class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
             <span>关于</span>
           </router-link>
         </li>
@@ -38,6 +38,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { ChatBubbleLeftRightIcon, UsersIcon, UserIcon, InformationCircleIcon } from '@heroicons/vue/24/solid'
 
 /*
  * 根据侧边栏展开状态控制底部导航栏的展开和折叠

@@ -3,7 +3,7 @@
     <!-- 聊天窗口头部 -->
     <header class="chat-header d-flex align-items-center p-3">
       <button class="btn btn-link text-dark me-3" @click="goBack">
-        <i class="bi bi-arrow-left fs-4"></i>
+        <ArrowLeftIcon class="w-6 h-6" />
       </button>
       <div class="user-info d-flex align-items-center">
         <img src="/image/OIP-C (3).jpg" class="avatar rounded-circle me-3" alt="Contact">
@@ -53,15 +53,14 @@
     <!-- 聊天窗口底部 -->
     <footer class="chat-footer p-3">
       <div class="input-group">
-        <button class="btn btn-link" @click="toggleEmojiPanel" data-emoji-trigger><i
-            class="bi bi-emoji-smile fs-4"></i></button>
-        <button class="btn btn-link" @click="triggerFileUpload"><i class="bi bi-paperclip fs-4"></i></button>
+        <button class="btn btn-link" @click="toggleEmojiPanel" data-emoji-trigger><FaceSmileIcon class="w-6 h-6" /></button>
+        <button class="btn btn-link" @click="triggerFileUpload"><PaperClipIcon class="w-6 h-6" /></button>
         <input type="file" ref="fileInput" @change="handleFileSelect" style="display: none;" multiple
           accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt">
         <textarea class="form-control message-input" placeholder="输入消息..." v-model="newMessage" @keydown="handleKeyDown"
           @input="handleInput" rows="1" style="resize: none; overflow: hidden;"></textarea>
         <button class="btn send-btn" @click="sendMessage" :disabled="!newMessage.trim()" ref="sendBtn">
-          <i :class="sendIconClass" class="fs-4"></i>
+          <PaperAirplaneIcon :class="sendIconClass" />
         </button>
       </div>
 
@@ -83,6 +82,7 @@
 <script setup>
 import { ref, nextTick, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { ArrowLeftIcon, FaceSmileIcon, PaperClipIcon, PaperAirplaneIcon, DocumentIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 const messageArea = ref(null)
@@ -254,7 +254,7 @@ const autoResizeTextarea = (textarea) => {
 
 // 计算发送图标类名 - 保持固定图标，不随换行变化
 const sendIconClass = computed(() => {
-  return 'bi bi-send-fill'
+  return 'w-6 h-6'
 })
 
 // 发送消息
@@ -354,7 +354,7 @@ const sendFileMessage = (file, fileUrl) => {
   } else if (file.type.startsWith('audio/')) {
     content = `<audio controls><source src="${fileUrl}" type="${file.type}">您的浏览器不支持音频播放。</audio>`
   } else {
-    content = `<a href="${fileUrl}" download="${file.name}" style="color: #007bff; text-decoration: none;"><i class="bi bi-file-earmark"></i> ${file.name}</a>`
+    content = `<a href="${fileUrl}" download="${file.name}" style="color: #007bff; text-decoration: none; display: flex; align-items: center;"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-3.75a3.75 3.75 0 01-3.75-3.75V1.5H5.625z" /><path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" /></svg> ${file.name}</a>`
   }
 
   messages.value.push({

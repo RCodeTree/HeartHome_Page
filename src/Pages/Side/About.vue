@@ -22,11 +22,11 @@
                         <div class="card-body">
                             <h3 class="card-title mb-3">我们的目标</h3>
                             <ul class="list-unstyled">
-                                <li class="mb-3"><i class="bi bi-heart-fill text-danger me-2"></i>建立互助社区，分享生活中的喜怒哀乐</li>
-                                <li class="mb-3"><i class="bi bi-people-fill text-primary me-2"></i>连接心友，互相倾听、支持与鼓励</li>
-                                <li class="mb-3"><i class="bi bi-shield-fill-check text-success me-2"></i>为心理健康提供专业支持和资源
+                                <li class="mb-3 flex items-center"><HeartIcon class="w-5 h-5 text-red-500 mr-2" />建立互助社区，分享生活中的喜怒哀乐</li>
+                                <li class="mb-3 flex items-center"><UsersIcon class="w-5 h-5 text-blue-500 mr-2" />连接心友，互相倾听、支持与鼓励</li>
+                                <li class="mb-3 flex items-center"><ShieldCheckIcon class="w-5 h-5 text-green-500 mr-2" />为心理健康提供专业支持和资源
                                 </li>
-                                <li><i class="bi bi-sun-fill text-warning me-2"></i>传播积极能量，共同成长</li>
+                                <li class="flex items-center"><SunIcon class="w-5 h-5 text-yellow-500 mr-2" />传播积极能量，共同成长</li>
                             </ul>
                         </div>
                     </div>
@@ -48,6 +48,7 @@
 </template>
 
 <script setup>
+import { HeartIcon, UsersIcon, ShieldCheckIcon, SunIcon } from '@heroicons/vue/24/solid'
 </script>
 
 <style scoped>

@@ -96,8 +96,8 @@
                             </button>
                         </div>
                         <div class="text-center py-5" v-if="!allWorks || allWorks.length === 0">
-                            <i class="bi bi-inbox-fill display-1 text-muted"></i>
-                            <p class="mt-3 text-muted">暂无作品</p>
+                            <InboxIcon class="w-24 h-24 mx-auto text-gray-400" />
+                            <p class="mt-3 text-gray-500">暂无作品</p>
                         </div>
                     </div>
 
@@ -112,9 +112,9 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">{{ article.createTime.slice(0, 10) }}</small>
                                             <div>
-                                                <span class="me-2"><i class="bi bi-heart"></i> {{ article.likesCount
+                                                <span class="me-2"><HeartIcon class="w-4 h-4 inline" /> {{ article.likesCount
                                                 }}</span>
-                                                <span><i class="bi bi-chat"></i> {{ article.commentsCount }}</span>
+                                                <span><ChatBubbleLeftIcon class="w-4 h-4 inline" /> {{ article.commentsCount }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -122,8 +122,8 @@
                             </div>
                         </div>
                         <div class="text-center py-5" v-if="!articles || articles.length === 0">
-                            <i class="bi bi-journal-text display-1 text-muted"></i>
-                            <p class="mt-3 text-muted">暂无心理文章</p>
+                            <DocumentTextIcon class="w-24 h-24 mx-auto text-gray-400" />
+                            <p class="mt-3 text-gray-500">暂无心理文章</p>
                         </div>
                     </div>
 
@@ -141,8 +141,8 @@
                             </div>
                         </div>
                         <div class="text-center py-5" v-if="!photos || photos.length === 0">
-                            <i class="bi bi-image display-1 text-muted"></i>
-                            <p class="mt-3 text-muted">暂无治愈图片</p>
+                            <PhotoIcon class="w-24 h-24 mx-auto text-gray-400" />
+                            <p class="mt-3 text-gray-500">暂无治愈图片</p>
                         </div>
                     </div>
                 </div>
@@ -161,6 +161,7 @@ import { UserEssaysService } from '../../Service/Works/WorksService'
 import { UserPhotosService } from '../../Service/Works/WorksService'
 import { vLazy } from '@/directives/lazy.js'
 import ToastNotification from '@/components/Animations/ToastNotification.vue'
+import { InboxIcon, HeartIcon, ChatBubbleLeftIcon, DocumentTextIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
 
 

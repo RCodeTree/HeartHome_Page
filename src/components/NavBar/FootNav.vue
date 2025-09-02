@@ -32,7 +32,7 @@
                     </div>
                     <!-- 发布按钮 -->
                     <router-link to="/publish" class="text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center transition-all duration-300 hover:scale-105">
-                        <i class="bi bi-plus-circle-fill mr-2 text-lg"></i>
+                        <PlusCircleIcon class="w-5 h-5 mr-2" />
                         <span>发布</span>
                     </router-link>
                 </div>
@@ -64,31 +64,31 @@
             <ul class="flex lg:hidden flex-row w-full justify-around">
                 <li>
                     <router-link to="/home" class="text-white flex flex-col items-center py-3 px-4 min-h-[48px] hover:bg-white/10 rounded-lg transition-all duration-300 group">
-                        <i class="bi bi-house-door-fill text-lg group-hover:scale-110 transition-transform duration-300"></i>
+                        <HomeIcon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <div class="text-xs mt-1">首页</div>
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/message" class="text-white flex flex-col items-center py-3 px-4 min-h-[48px] hover:bg-white/10 rounded-lg transition-all duration-300 group">
-                        <i class="bi bi-chat-dots-fill text-lg group-hover:scale-110 transition-transform duration-300"></i>
+                        <ChatBubbleLeftRightIcon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <div class="text-xs mt-1">消息</div>
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/friend" class="text-white flex flex-col items-center py-3 px-4 min-h-[48px] hover:bg-white/10 rounded-lg transition-all duration-300 group">
-                        <i class="bi bi-people-fill text-lg group-hover:scale-110 transition-transform duration-300"></i>
+                        <UsersIcon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <div class="text-xs mt-1">好友</div>
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/publish" class="text-white flex flex-col items-center py-3 px-4 min-h-[48px] hover:bg-white/10 rounded-lg transition-all duration-300 group">
-                        <i class="bi bi-plus-circle-fill text-lg group-hover:scale-110 transition-transform duration-300"></i>
+                        <PlusCircleIcon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <div class="text-xs mt-1">发布</div>
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/my" class="text-white flex flex-col items-center py-3 px-4 min-h-[48px] hover:bg-white/10 rounded-lg transition-all duration-300 group">
-                        <i class="bi bi-person-fill text-lg group-hover:scale-110 transition-transform duration-300"></i>
+                        <UserIcon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <div class="text-xs mt-1">我的</div>
                     </router-link>
                 </li>
@@ -100,6 +100,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { loginStore } from '../../stores/HeartHomeStore'
+import { HomeIcon, ChatBubbleLeftRightIcon, UsersIcon, PlusCircleIcon, UserIcon } from '@heroicons/vue/24/solid'
 
 
 
