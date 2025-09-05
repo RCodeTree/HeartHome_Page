@@ -1,63 +1,70 @@
 <template>
-    <div class="friend-list-container" ref="scrollContainer">
-        <div class="friend-header sticky top-0 bg-white shadow-sm z-10 p-4 border-b border-gray-200">
-            <h2 class="text-xl font-bold text-gray-800 mb-3">心友</h2>
-
-            <!-- 添加好友按钮和搜索框 -->
-            <div class="friend-actions flex items-center justify-between">
-                <div v-show="!isSearching"
-                    class="min-w-[44px] min-h-[44px] w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200"
-                    @click="toggleSearch" title="添加好友">
-                    <i class="text-white text-lg font-bold">+</i>
-                </div>
-                <div v-show="isSearching" class="flex items-center space-x-2 flex-1">
-                    <input type="text" v-model="searchQuery"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="搜索好友..." @keyup.enter="searchFriends" ref="searchInput">
-                    <button
-                        class="min-h-[44px] px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
-                        @click="searchFriends">搜索</button>
-                    <button
-                        class="min-h-[44px] px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
-                        @click="toggleSearch">取消</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 骨架屏 -->
-        <div v-if="loading" class="p-4 space-y-4">
-            <div v-for="i in 10" :key="i" class="flex items-center space-x-3 p-3 animate-pulse">
-                <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
-                <div class="flex-1 space-y-2">
-                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
-                    <div class="h-3 bg-gray-300 rounded w-1/2"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 好友列表 -->
-        <transition-group name="friend-list" tag="div" class="p-4 space-y-2">
-            <div v-for="friend in displayedFriends" :key="friend.username"
-                class="flex items-center space-x-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
-                @click="selectFriend(friend)">
-                <img :src="friend.avatarUrl" :alt="friend.username"
-                    class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
-                <div class="flex-1 min-w-0">
-                    <div class="font-medium text-gray-900 truncate">{{ friend.username }}</div>
-                    <div class="text-sm" :class="friend.status == 1 ? 'text-green-600' : 'text-gray-500'">
-                        {{ friend.status == 1 ? '在线' : formatLastActiveTime(Date.now()) }}
+    <div class="friend-container">
+        <!-- 固定在顶部的头部 -->
+        <div class="friend-header">
+            <div class="flex items-center justify-between w-full">
+                <h2 class="text-xl font-bold text-gray-800">心友</h2>
+                <div class="friend-actions flex items-center justify-end">
+                    <div v-show="!isSearching" @click="toggleSearch" title="添加好友"
+                        class="p-2 rounded-full hover:bg-gray-200 cursor-pointer transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-500" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                    <div v-show="isSearching" class="flex items-center space-x-2">
+                        <input type="text" v-model="searchQuery"
+                            class="w-48 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                            placeholder="搜索或添加好友..." @keyup.enter="searchFriends" ref="searchInput">
+                        <button
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                            @click="searchFriends">搜索</button>
+                        <button
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                            @click="toggleSearch">取消</button>
                     </div>
                 </div>
             </div>
-        </transition-group>
+        </div>
 
-        <!-- 加载中提示 -->
-        <div v-if="loadingMore && friends.length > 0" class="text-center py-4">
-            <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"
-                role="status">
-                <span class="sr-only">加载中...</span>
+        <!-- 可滚动的好友列表区域 -->
+        <div class="friend-list-container" ref="scrollContainer">
+            <!-- 骨架屏 -->
+            <div v-if="loading" class="p-4 space-y-4">
+                <div v-for="i in 10" :key="i" class="flex items-center space-x-3 p-3 animate-pulse">
+                    <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                        <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                </div>
             </div>
-            <span class="ml-2 text-gray-600">加载中...</span>
+
+            <!-- 好友列表 -->
+            <transition-group v-else name="friend-list" tag="div" class="p-4 space-y-2">
+                <div v-for="friend in displayedFriends" :key="friend.username"
+                    class="flex items-center space-x-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer border border-gray-100 hover:border-blue-200"
+                    @click="selectFriend(friend)">
+                    <img :src="friend.avatarUrl" :alt="friend.username"
+                        class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-900 truncate">{{ friend.username }}</div>
+                        <div class="text-sm" :class="friend.status == 1 ? 'text-green-600' : 'text-gray-500'">
+                            {{ friend.status == 1 ? '在线' : formatLastActiveTime(Date.now()) }}
+                        </div>
+                    </div>
+                </div>
+            </transition-group>
+
+            <!-- 加载中提示 -->
+            <div v-if="loadingMore && friends.length > 0" class="text-center py-4">
+                <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"
+                    role="status">
+                    <span class="sr-only">加载中...</span>
+                </div>
+                <span class="ml-2 text-gray-600">加载中...</span>
+            </div>
         </div>
     </div>
 </template>
@@ -245,10 +252,18 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.friend-list-container {
+.friend-container {
     width: 100%;
-    margin: 0;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 112px);
+    /* 56px top nav + 56px bottom nav */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.friend-list-container {
+    flex: 1;
     overflow-y: auto;
     position: relative;
     scrollbar-width: none;
@@ -264,20 +279,13 @@ onUnmounted(() => {
     /* Chrome, Safari, Opera */
 }
 
-
-
-
-
 .friend-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
     padding: 1rem 1.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .friend-list-title {

@@ -1,8 +1,7 @@
 <template>
     <div class="message-container">
-        <!-- 批量操作区域 -->
-        <div
-            class="batch-operation-header sticky top-0 bg-white shadow-sm flex justify-between items-center mb-3 p-3 w-full z-10">
+        <!-- 批量操作区域 - 固定在组件顶部 -->
+        <div class="batch-operation-header">
             <div class="flex items-center space-x-4">
                 <div class="flex items-center">
                     <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" type="checkbox" v-model="showCheckboxes">
@@ -15,58 +14,70 @@
                 </div>
             </div>
             <div class="flex space-x-2">
-                <button class="px-4 py-3 min-h-[44px] text-sm border border-blue-500 text-blue-500 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200" @click="batchMarkAsRead"
-                    :disabled="!hasSelected">标记已读</button>
-                <button class="px-4 py-3 min-h-[44px] text-sm border border-red-500 text-red-500 rounded hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200" @click="batchDelete"
-                    :disabled="!hasSelected">批量删除</button>
+                <button class="action-btn read-btn" @click="batchMarkAsRead" :disabled="!hasSelected">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>已读</span>
+                </button>
+                <button class="action-btn delete-btn" @click="batchDelete" :disabled="!hasSelected">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    <span>删除</span>
+                </button>
             </div>
         </div>
 
-        <!-- 骨架屏 -->
-        <div v-if="loading && messages.length === 0" class="skeleton-container">
-            <div v-for="i in 10" :key="i" class="skeleton-item">
-                <div class="skeleton-checkbox"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-name"></div>
-                    <div class="skeleton-time"></div>
-                </div>
-                <div class="skeleton-avatar"></div>
-            </div>
-        </div>
+        <!-- 消息列表容器 - 可滚动区域 -->
+        <div class="message-list-container">
 
-        <!-- 消息列表 -->
-        <div class="p-3 space-y-2">
-            <div v-for="message in messages" :key="message.id"
-                class="bg-white border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200 message-item"
-                @contextmenu.prevent="showContextMenu($event, message)" @touchstart="handleTouchStart($event, message)"
-                @touchend="handleTouchEnd">
-                <!-- 消息内容 -->
-                <div class="flex justify-between items-center relative">
-                    <div class="flex items-center" v-show="showCheckboxes" @click.stop>
-                        <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" type="checkbox" v-model="message.selected">
+            <!-- 骨架屏 -->
+            <div v-if="loading && messages.length === 0" class="skeleton-container">
+                <div v-for="i in 10" :key="i" class="skeleton-item">
+                    <div class="skeleton-checkbox"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton-name"></div>
+                        <div class="skeleton-time"></div>
                     </div>
-                    <router-link to="/message/chat" class="no-underline flex-1">
-                        <div class="flex items-center justify-end">
-                            <div class="unread-dot" v-show="!message.isRead"></div>
-                            <div class="message-content mr-3 text-black">
-                                <h6 class="mb-1 font-semibold text-gray-800">{{ message.nickname }}</h6>
-                                <small class="text-gray-500 text-sm">{{ formatTime(message.timestamp) }}</small>
-                            </div>
-                        </div>
-                    </router-link>
-                    <router-link to="/my" class="message-avatar" @click.stop>
-                        <img :src="message.avatar" :alt="message.nickname" class="w-12 h-12 rounded-full object-cover" loading="lazy">
-                    </router-link>
+                    <div class="skeleton-avatar"></div>
                 </div>
             </div>
-        </div>
 
-        <!-- 加载中提示 -->
-        <div v-if="loading && messages.length > 0" class="text-center mt-3 mb-4">
-            <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" role="status">
-                <span class="sr-only">加载中...</span>
+            <!-- 消息列表 -->
+            <div class="p-3 space-y-2">
+                <div v-for="message in messages" :key="message.id"
+                    class="bg-white border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200 message-item"
+                    @contextmenu.prevent="showContextMenu($event, message)" @touchstart="handleTouchStart($event, message)"
+                    @touchend="handleTouchEnd">
+                    <!-- 消息内容 -->
+                    <div class="flex justify-between items-center relative">
+                        <div class="flex items-center" v-show="showCheckboxes" @click.stop>
+                            <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" type="checkbox" v-model="message.selected">
+                        </div>
+                        <router-link to="/message/chat" class="no-underline flex-1">
+                            <div class="flex items-center justify-end">
+                                <div class="unread-dot" v-show="!message.isRead"></div>
+                                <div class="message-content mr-3 text-black">
+                                    <h6 class="mb-1 font-semibold text-gray-800">{{ message.nickname }}</h6>
+                                    <small class="text-gray-500 text-sm">{{ formatTime(message.timestamp) }}</small>
+                                </div>
+                            </div>
+                        </router-link>
+                        <router-link to="/my" class="message-avatar" @click.stop>
+                            <img :src="message.avatar" :alt="message.nickname" class="w-12 h-12 rounded-full object-cover" loading="lazy">
+                        </router-link>
+                    </div>
+                </div>
             </div>
-            <span class="ml-2 text-gray-600">加载中...</span>
+
+            <!-- 加载中提示 -->
+            <div v-if="loading && messages.length > 0" class="text-center mt-3 mb-4">
+                <div class="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" role="status">
+                    <span class="sr-only">加载中...</span>
+                </div>
+                <span class="ml-2 text-gray-600">加载中...</span>
+            </div>
         </div>
 
         <!-- 上下文菜单 -->
@@ -212,7 +223,7 @@ const updateTimes = () => {
 
 // 监听滚动事件，实现滚动到底部自动加载更多
 const handleScroll = () => {
-    const container = document.querySelector('.message-container')
+    const container = document.querySelector('.message-list-container')
     if (!container) return
 
     const { scrollTop, scrollHeight, clientHeight } = container
@@ -233,7 +244,7 @@ onMounted(() => {
 
 
     // 添加滚动事件监听
-    const container = document.querySelector('.message-container')
+    const container = document.querySelector('.message-list-container')
     if (container) {
         container.addEventListener('scroll', handleScroll)
     }
@@ -253,7 +264,7 @@ onBeforeUnmount(() => {
 
 
     // 移除滚动事件监听
-    const container = document.querySelector('.message-container')
+    const container = document.querySelector('.message-list-container')
     if (container) {
         container.removeEventListener('scroll', handleScroll)
     }
@@ -330,31 +341,88 @@ const deleteMessage = (message) => {
 */
 .message-container {
     width: 100%;
-    height: calc(100vh - 90px);
-    overflow-y: auto;
-    padding-bottom: 20px;
-    transition: all 0.3s ease;
-    /* 隐藏滚动条 */
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
-}
-
-.message-container::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari, Opera */
+    height: calc(100vh - 112px); /* 56px top nav + 56px bottom nav */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* 禁止整个容器滚动 */
+    overflow: hidden;
 }
 
 /* 
 批量操作区域 
 */
 .batch-operation-header {
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 12px 16px;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 消息列表容器样式 */
+.message-list-container {
+    flex: 1;
+    overflow-y: auto;
+    /* 隐藏滚动条 */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.message-list-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* 优化的按钮样式 */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.read-btn {
+    background-color: #10b981;
+    color: white;
+}
+
+.read-btn:hover {
+    background-color: #059669;
+}
+
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 
@@ -364,18 +432,18 @@ const deleteMessage = (message) => {
 */
 /* 移动端样式优化 */
 @media (max-width: 991.98px) {
-    .message-container {
-        height: calc(100vh - 120px);
-        /* 增加底部导航栏的空间 */
-        padding-bottom: 60px;
-        /* 确保内容不被底部导航栏遮挡 */
+    .batch-operation-header {
+        padding: 10px 12px;
     }
-}
-
-@media (min-width: 992px) {
-    .message-container {
-        margin-left: 20px;
-        width: calc(100% - 20px);
+    
+    .action-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .action-btn svg {
+        width: 12px;
+        height: 12px;
     }
 }
 
