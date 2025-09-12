@@ -51,61 +51,62 @@
                 :class="{ 'fade-in': userInfoLoaded }">
                 <!-- 移动端专用布局 -->
                 <div class="mobile-profile-layout md:hidden">
-                    <!-- 顶部操作栏 -->
-                    <div class="flex justify-between items-center p-4 pb-2">
-                        <div class="flex items-center space-x-3">
-                            <img v-lazy="userInfo?.avatarUrl"
-                                class="w-16 h-16 rounded-full object-cover border-3 border-blue-200 shadow-md"
-                                alt="用户头像">
-                            <div class="flex-1">
-                                <h2 class="text-lg font-bold text-blue-600 mb-1">{{ userInfo?.username }}</h2>
-                                <p class="text-xs text-gray-500 flex items-center">
-                                    <i class="mr-1 text-xs">📍</i>{{ userInfo?.address || '神秘地址' }}
-                                </p>
-                            </div>
-                        </div>
+                    <!-- 退出登录按钮 -->
+                    <div class="absolute top-3 right-3 z-10">
                         <button @click="logout"
-                            class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 flex items-center space-x-1 text-xs shadow-md">
+                            class="px-3 py-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 flex items-center space-x-1 text-xs shadow-lg">
                             <i class="text-xs">→</i>
-                            <span>退出</span>
+                            <span>退出登录</span>
                         </button>
                     </div>
-
-                    <!-- 统计数据卡片 -->
-                    <div class="px-4 pb-3">
-                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-3">
-                            <div class="flex justify-around text-center">
-                                <div class="flex-1">
-                                    <div class="text-lg font-bold text-blue-600">{{ userInfo?.worksCount }}</div>
-                                    <div class="text-xs text-gray-600">作品</div>
-                                </div>
-                                <div class="w-px bg-gray-200 mx-2"></div>
-                                <div class="flex-1">
-                                    <div class="text-lg font-bold text-purple-600">{{ userInfo?.fansCount }}</div>
-                                    <div class="text-xs text-gray-600">粉丝</div>
-                                </div>
-                                <div class="w-px bg-gray-200 mx-2"></div>
-                                <div class="flex-1">
-                                    <div class="text-lg font-bold text-green-600">{{ userInfo?.followsCount }}</div>
-                                    <div class="text-xs text-gray-600">关注</div>
-                                </div>
-                            </div>
+                    
+                    <!-- 用户头像和基本信息 -->
+                    <div class="text-center pt-8 pb-4">
+                        <!-- 头像 -->
+                        <div class="relative inline-block mb-4">
+                            <img v-lazy="userInfo?.avatarUrl"
+                                class="w-20 h-20 rounded-full object-cover border-4 border-blue-200 shadow-lg"
+                                alt="用户头像">
                         </div>
-                    </div>
-
-                    <!-- 个人描述 -->
-                    <div class="px-4 pb-4" v-if="userInfo?.personalDescription">
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="text-sm text-gray-700 leading-relaxed">{{ userInfo?.personalDescription ||
-                                '该心友很懒什么都没有写' }}</p>
-                        </div>
-                    </div>
-
-                    <!-- 加入时间 -->
-                    <div class="px-4 pb-4">
-                        <p class="text-xs text-gray-400 flex items-center justify-center">
-                            <i class="mr-1 text-xs">📅</i>加入于 {{ userInfo?.createTime }}
+                        
+                        <!-- 用户名 -->
+                        <h2 class="text-xl font-bold text-blue-600 mb-1">{{ userInfo?.username }}</h2>
+                        
+                        <!-- 地址信息 -->
+                         <div class="flex items-center justify-center mb-3">
+                             <i class="text-sm mr-1">📍</i>
+                             <span class="text-sm text-gray-500">{{ userInfo?.address || '广西' }}</span>
+                         </div>
+                        
+                        <!-- 加入时间 -->
+                        <p class="text-xs text-gray-400 mb-4">
+                            加入于 {{ userInfo?.createTime }}
                         </p>
+                    </div>
+                    
+                    <!-- 统计数据 -->
+                     <div class="px-6 pb-4">
+                         <div class="bg-gray-50 rounded-xl py-4">
+                             <div class="flex justify-around items-center">
+                                 <div class="flex items-center space-x-2">
+                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.worksCount || '5' }}</span>
+                                     <span class="text-sm text-gray-600">作品</span>
+                                 </div>
+                                 <div class="flex items-center space-x-2">
+                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.fansCount || '1' }}</span>
+                                     <span class="text-sm text-gray-600">粉丝</span>
+                                 </div>
+                                 <div class="flex items-center space-x-2">
+                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.followsCount || '1' }}</span>
+                                     <span class="text-sm text-gray-600">关注</span>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    
+                    <!-- 个人描述 -->
+                    <div class="px-6 pb-6">
+                        <p class="text-sm text-gray-700 leading-relaxed text-center">{{ userInfo?.personalDescription || '初始用户' }}</p>
                     </div>
                 </div>
 
@@ -1365,89 +1366,44 @@ onBeforeUnmount(() => {
         padding-bottom: 16px;
     }
 
-    .user-info-card {
-        margin: 8px 0;
-        padding: 16px;
-        border-radius: 16px;
-        position: relative;
+    /* 移动端用户信息卡片样式重置 */
+    .mobile-profile-layout {
+        padding: 0;
     }
-
-    /* 移动端布局优化 - 头像和信息水平排列 */
-    .user-info-card>.flex {
-        flex-direction: row !important;
-        align-items: flex-start !important;
-        gap: 12px;
-        padding-top: 8px;
-        /* 为退出按钮留出空间 */
+    
+    .mobile-profile-layout .text-center {
+        padding: 16px 20px 12px;
     }
-
-    /* 头像容器 - 固定宽度 */
-    .user-info-card .flex-shrink-0 {
-        text-align: center !important;
-        margin-bottom: 0;
-        width: 80px;
-        flex-shrink: 0;
+    
+    .mobile-profile-layout img {
+        width: 72px !important;
+        height: 72px !important;
+        border-width: 3px;
     }
-
-    /* 信息容器 - 占据剩余空间 */
-    .user-info-card .flex-1 {
-        text-align: left !important;
-        width: auto;
-        flex: 1;
-        min-width: 0;
-        /* 防止内容溢出 */
+    
+    .mobile-profile-layout h2 {
+        font-size: 1.125rem !important;
+        margin-bottom: 6px !important;
     }
-
-    .user-info-card img {
-        width: 64px;
-        height: 64px;
-        border-width: 2px;
+    
+    .mobile-profile-layout p {
+        font-size: 0.75rem !important;
+        margin-bottom: 4px !important;
     }
-
-    .user-info-card h2 {
-        font-size: 1.125rem;
-        /* 18px，小屏幕适配 */
-        text-align: left !important;
-        margin-bottom: 6px;
+    
+    .mobile-profile-layout .px-6 {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    .mobile-profile-layout .text-2xl {
+        font-size: 1.25rem !important;
+    }
+    
+    .mobile-profile-layout .text-sm {
+        font-size: 0.75rem !important;
+    
         line-height: 1.2;
-    }
-
-    .user-info-card p {
-        font-size: 0.75rem;
-        /* 12px */
-        justify-content: flex-start !important;
-        text-align: left !important;
-        margin-bottom: 4px;
-        line-height: 1.3;
-    }
-
-    .user-info-card p:last-child {
-        text-align: left !important;
-        font-size: 0.6875rem;
-        /* 11px */
-        line-height: 1.4;
-    }
-
-    .user-info-card .text-center .text-xl {
-        font-size: 1rem;
-        /* 16px */
-        font-weight: 600;
-    }
-
-    .user-info-card .text-center .text-sm {
-        font-size: 0.625rem;
-        /* 10px */
-    }
-
-    /* 用户统计数据 - 紧凑布局 */
-    .user-info-card .flex-wrap {
-        justify-content: flex-start !important;
-        gap: 16px;
-        margin-bottom: 8px;
-    }
-
-    .user-info-card .flex-wrap>div {
-        min-width: 40px;
     }
 
     .works-section {
@@ -1504,29 +1460,13 @@ onBeforeUnmount(() => {
         /* 14px */
     }
 
-    .logout-btn {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        font-size: 0.6875rem;
-        /* 11px */
-        padding: 6px 8px;
-        border-radius: 8px;
-        min-height: 32px;
-        min-width: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-    }
-
-    .logout-btn i {
-        font-size: 0.75rem;
-    }
-
-    .logout-btn span {
-        font-size: 0.6875rem;
-        white-space: nowrap;
+    /* 移动端退出登录按钮优化 */
+    .mobile-profile-layout .absolute button {
+        font-size: 0.6875rem !important;
+        padding: 6px 10px !important;
+        border-radius: 20px !important;
+        min-height: 32px !important;
+        min-width: 80px !important;
     }
 
     /* 小屏幕图标尺寸优化 */
