@@ -59,7 +59,7 @@
                             <span>退出登录</span>
                         </button>
                     </div>
-                    
+
                     <!-- 用户头像和基本信息 -->
                     <div class="text-center pt-8 pb-4">
                         <!-- 头像 -->
@@ -68,45 +68,49 @@
                                 class="w-20 h-20 rounded-full object-cover border-4 border-blue-200 shadow-lg"
                                 alt="用户头像">
                         </div>
-                        
+
                         <!-- 用户名 -->
                         <h2 class="text-xl font-bold text-blue-600 mb-1">{{ userInfo?.username }}</h2>
-                        
+
                         <!-- 地址信息 -->
-                         <div class="flex items-center justify-center mb-3">
-                             <i class="text-sm mr-1">📍</i>
-                             <span class="text-sm text-gray-500">{{ userInfo?.address || '广西' }}</span>
-                         </div>
-                        
+                        <div class="flex flex-row items-center justify-center mb-3 space-x-1">
+                            <i class="text-lg">📍</i>
+                            <span class="text-sm text-gray-500">{{ userInfo?.address || '广西' }}</span>
+                        </div>
+
                         <!-- 加入时间 -->
                         <p class="text-xs text-gray-400 mb-4">
                             加入于 {{ userInfo?.createTime }}
                         </p>
                     </div>
-                    
+
                     <!-- 统计数据 -->
-                     <div class="px-6 pb-4">
-                         <div class="bg-gray-50 rounded-xl py-4">
-                             <div class="flex justify-around items-center">
-                                 <div class="flex items-center space-x-2">
-                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.worksCount || '5' }}</span>
-                                     <span class="text-sm text-gray-600">作品</span>
-                                 </div>
-                                 <div class="flex items-center space-x-2">
-                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.fansCount || '1' }}</span>
-                                     <span class="text-sm text-gray-600">粉丝</span>
-                                 </div>
-                                 <div class="flex items-center space-x-2">
-                                     <span class="text-2xl font-bold text-gray-800">{{ userInfo?.followsCount || '1' }}</span>
-                                     <span class="text-sm text-gray-600">关注</span>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                    
+                    <div class="px-6 pb-4">
+                        <div class="bg-gray-50 rounded-xl py-4">
+                            <div class="flex justify-around items-center">
+                                <div class="text-center">
+                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.worksCount || '5'
+                                        }}</span>
+                                    <span class="block text-sm text-gray-600">作品</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.fansCount || '1'
+                                        }}</span>
+                                    <span class="block text-sm text-gray-600">粉丝</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.followsCount ||
+                                        '1' }}</span>
+                                    <span class="block text-sm text-gray-600">关注</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 个人描述 -->
                     <div class="px-6 pb-6">
-                        <p class="text-sm text-gray-700 leading-relaxed text-center">{{ userInfo?.personalDescription || '初始用户' }}</p>
+                        <p class="text-sm text-gray-700 leading-relaxed text-center">{{ userInfo?.personalDescription ||
+                            '初始用户' }}</p>
                     </div>
                 </div>
 
@@ -147,7 +151,7 @@
                                 </div>
                             </div>
                             <p class="text-gray-700 leading-relaxed">{{ userInfo?.personalDescription || '该心友很懒什么都没有写'
-                                }}
+                            }}
                             </p>
                         </div>
                     </div>
@@ -228,7 +232,7 @@
                                 <div
                                     class="article-card bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full flex flex-col p-4">
                                     <h5 class="text-base font-semibold text-gray-800 mb-2 line-clamp-2">{{ article.title
-                                        }}</h5>
+                                    }}</h5>
                                     <p class="text-gray-600 text-sm mb-3 flex-1 line-clamp-3">{{ article.shortDesc }}
                                     </p>
                                     <div class="flex justify-between items-center text-xs">
@@ -1366,45 +1370,7 @@ onBeforeUnmount(() => {
         padding-bottom: 16px;
     }
 
-    /* 移动端用户信息卡片样式重置 */
-    .mobile-profile-layout {
-        padding: 0;
-    }
-    
-    .mobile-profile-layout .text-center {
-        padding: 16px 20px 12px;
-    }
-    
-    .mobile-profile-layout img {
-        width: 72px !important;
-        height: 72px !important;
-        border-width: 3px;
-    }
-    
-    .mobile-profile-layout h2 {
-        font-size: 1.125rem !important;
-        margin-bottom: 6px !important;
-    }
-    
-    .mobile-profile-layout p {
-        font-size: 0.75rem !important;
-        margin-bottom: 4px !important;
-    }
-    
-    .mobile-profile-layout .px-6 {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-    }
-    
-    .mobile-profile-layout .text-2xl {
-        font-size: 1.25rem !important;
-    }
-    
-    .mobile-profile-layout .text-sm {
-        font-size: 0.75rem !important;
-    
-        line-height: 1.2;
-    }
+
 
     .works-section {
         margin: 8px 0;
