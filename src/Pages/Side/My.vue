@@ -51,75 +51,77 @@
                 :class="{ 'fade-in': userInfoLoaded }">
                 <!-- 移动端专用布局 -->
                 <div class="mobile-profile-layout md:hidden">
-                    <!-- 退出登录按钮 -->
-                    <div class="absolute top-3 right-3 z-10">
-                        <button @click="logout"
-                            class="px-3 py-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 flex items-center space-x-1 text-xs shadow-lg">
-                            <i class="text-xs">→</i>
-                            <span>退出登录</span>
-                        </button>
-                    </div>
+
+
 
                     <!-- 用户头像和基本信息 -->
-                    <div class="text-center pt-8 pb-4">
+                    <div class="flex flex-col items-center">
                         <!-- 头像 -->
-                        <div class="relative inline-block mb-4">
+                        <div class="mb-3 cursor-pointer">
                             <img v-lazy="userInfo?.avatarUrl"
                                 class="w-20 h-20 rounded-full object-cover border-4 border-blue-200 shadow-lg"
                                 alt="用户头像">
                         </div>
 
-                        <!-- 用户名 -->
-                        <h2 class="text-xl font-bold text-blue-600 mb-1">{{ userInfo?.username }}</h2>
+                        <!-- 统计数据 -->
+                        <div class="px-6 pb-4 w-full bg-white/50 rounded-lg shadow-sm border border-gray-100 mb-3">
+                            <div class="bg-gray-50 rounded-xl py-4">
+                                <div class="flex justify-around">
+                                    <div class="flex items-center space-x-1">
+                                        <span class="text-lg text-blue-600 font-medium">作品</span>
+                                        <span class="text-2xl font-bold text-blue-700">{{
+                                            userInfo?.worksCount }}</span>
+                                    </div>
 
-                        <!-- 地址信息 -->
-                        <div class="flex flex-row items-center justify-center mb-3 space-x-1">
-                            <i class="text-lg">📍</i>
-                            <span class="text-sm text-gray-500">{{ userInfo?.address || '广西' }}</span>
-                        </div>
+                                    <div class="flex items-center space-x-1">
+                                        <span class="text-lg text-pink-600 font-medium">粉丝</span>
+                                        <span class="text-2xl font-bold text-pink-700">{{ userInfo?.fansCount
+                                            }}</span>
+                                    </div>
 
-                        <!-- 加入时间 -->
-                        <p class="text-xs text-gray-400 mb-4">
-                            加入于 {{ userInfo?.createTime }}
-                        </p>
-                    </div>
-
-                    <!-- 统计数据 -->
-                    <div class="px-6 pb-4">
-                        <div class="bg-gray-50 rounded-xl py-4">
-                            <div class="flex justify-around items-center">
-                                <div class="text-center">
-                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.worksCount || '5'
-                                        }}</span>
-                                    <span class="block text-sm text-gray-600">作品</span>
-                                </div>
-                                <div class="text-center">
-                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.fansCount || '1'
-                                        }}</span>
-                                    <span class="block text-sm text-gray-600">粉丝</span>
-                                </div>
-                                <div class="text-center">
-                                    <span class="block text-2xl font-bold text-gray-800">{{ userInfo?.followsCount ||
-                                        '1' }}</span>
-                                    <span class="block text-sm text-gray-600">关注</span>
+                                    <div class="flex items-center space-x-1">
+                                        <span class="text-lg text-green-600 font-medium">关注</span>
+                                        <span class="text-2xl font-bold text-green-700">{{
+                                            userInfo?.followsCount
+                                            }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
+                        <div class="flex flex-row justify-between w-full">
+                            <div class="flex flex-col items-start space-y-2">
+                                <!-- 用户名 -->
+                                <h2 class="text-sm font-bold text-blue-600">{{ userInfo?.username }}</h2>
+
+                                <!-- 地址信息 -->
+                                <div class="space-x-1">
+                                    <i class="text-lg">📍</i>
+                                    <span class="text-sm text-gray-500">{{ userInfo?.address }}</span>
+                                </div>
+
+                                <!-- 加入时间 -->
+                                <p class="text-xs text-gray-400 mb-4">
+                                    加入于 {{ userInfo?.createTime }}
+                                </p>
+                            </div>
+
+                            <!-- 响应式编辑按钮 - 移动端位置 -->
+                            <button @click="handleEdit"
+                                class="md:hidden bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md active:scale-95 transform">编辑</button>
+                        </div>
+
+
+
                     </div>
 
-                    <!-- 个人描述 -->
-                    <div class="px-6 pb-6">
-                        <p class="text-sm text-gray-700 leading-relaxed text-center">{{ userInfo?.personalDescription ||
-                            '初始用户' }}</p>
-                    </div>
+
+
                 </div>
 
                 <!-- 桌面端布局 -->
                 <div class="desktop-profile-layout hidden md:block p-6">
-                    <button @click="logout"
-                        class="absolute top-3 right-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center space-x-2 min-w-[44px] min-h-[44px]">
-                        <i class="text-sm">→</i> <span>退出登录</span>
-                    </button>
                     <div
                         class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
                         <div class="flex-shrink-0 text-center">
@@ -151,8 +153,13 @@
                                 </div>
                             </div>
                             <p class="text-gray-700 leading-relaxed">{{ userInfo?.personalDescription || '该心友很懒什么都没有写'
-                            }}
+                                }}
                             </p>
+                            <!-- 响应式编辑按钮 - PC端位置 -->
+                            <div class="hidden md:flex justify-start mt-4">
+                                <button @click="handleEdit"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md active:scale-95 transform">编辑</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,7 +239,7 @@
                                 <div
                                     class="article-card bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full flex flex-col p-4">
                                     <h5 class="text-base font-semibold text-gray-800 mb-2 line-clamp-2">{{ article.title
-                                    }}</h5>
+                                        }}</h5>
                                     <p class="text-gray-600 text-sm mb-3 flex-1 line-clamp-3">{{ article.shortDesc }}
                                     </p>
                                     <div class="flex justify-between items-center text-xs">
@@ -333,6 +340,13 @@ const router = useRouter() // 获取路由实例
 const username = computed(() => store.currentUser?.username || '访客') // 获取Pinia持久化数据查询用户信息
 const userInfo = ref(null)
 
+// 编辑按钮点击处理函数
+const handleEdit = () => {
+    // TODO: 实现编辑用户信息的逻辑
+    console.log('编辑用户信息')
+    // 这里可以添加打开编辑模态框、跳转到编辑页面等逻辑
+}
+
 // 页面加载状态管理
 const pageLoading = ref(true)
 const userInfoLoaded = ref(false)
@@ -344,16 +358,6 @@ const apiLoadingStates = reactive({
     photos: false
 })
 
-/*
- Toast 通知引用
- */
-// 移除本地toast引用，使用全局事件
-
-// 退出登录方法
-const logout = () => {
-    store.removeStore()
-    router.replace('/login') // 重定向到登录页面
-}
 
 
 // 作品(包含图片、标题、文字) - 使用模拟数据
@@ -821,7 +825,7 @@ onBeforeUnmount(() => {
         box-sizing: border-box;
     }
 
-    .user-info-card .flex {
+    .user-info-card {
         flex-direction: column;
         text-align: center;
         gap: clamp(12px, 3vw, 18px);
@@ -853,17 +857,17 @@ onBeforeUnmount(() => {
     }
 
     /* 移动端统计数据布局 */
-    .user-info-card .flex.flex-wrap {
+    .user-info-card .flex-wrap {
         gap: 20px;
         margin-bottom: 16px;
     }
 
-    .user-info-card .text-center .text-xl {
+    .user-info-card .text-xl {
         font-size: 1.25rem;
         /* 20px，保持数据突出但不过大 */
     }
 
-    .user-info-card .text-center .text-sm {
+    .user-info-card {
         font-size: 0.75rem;
         /* 12px，标签文字 */
     }
@@ -978,7 +982,7 @@ onBeforeUnmount(() => {
     }
 
     /* 移动端按钮容器优化 */
-    .works-section .flex {
+    .works-section {
         gap: clamp(6px, 1.5vw, 10px);
         flex-wrap: wrap;
         justify-content: center;
@@ -996,27 +1000,7 @@ onBeforeUnmount(() => {
         max-width: 100%;
     }
 
-    /* 移动端退出登录按钮优化 */
-    .logout-btn {
-        font-size: 0.75rem;
-        /* 12px */
-        padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 16px);
-        border-radius: clamp(8px, 2vw, 12px);
-        top: clamp(8px, 2vw, 14px);
-        right: clamp(8px, 2vw, 14px);
-        white-space: nowrap;
-        min-height: clamp(32px, 8vw, 42px);
-        min-width: clamp(70px, 18vw, 90px);
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 
-    .logout-btn:hover {
-        transform: scale(1.02);
-        /* 移动端减少旋转效果 */
-    }
 
     /* 移动端图标尺寸优化 */
     .HeartIcon,
@@ -1131,32 +1115,7 @@ onBeforeUnmount(() => {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.logout-btn {
-    z-index: 10;
-    font-size: 0.9rem;
-    padding: 8px 15px;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    background-color: #dc3545;
-    /* 默认红色 */
-    border-color: #dc3545;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-.logout-btn:hover {
-    background-color: #c82333;
-    /* 悬停深红色 */
-    border-color: #bd2130;
-    transform: scale(1.05) rotate(2deg);
-    /* 放大并轻微旋转 */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-}
-
-.logout-btn:active {
-    transform: scale(0.95);
-    /* 点击缩小 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 .avatar-container {
     width: 120px;
@@ -1346,21 +1305,7 @@ onBeforeUnmount(() => {
         font-size: 0.9rem;
     }
 
-    /* 移动端退出登录按钮优化 */
-    .logout-btn {
-        font-size: 0.8rem;
-        padding: 6px 12px;
-        border-radius: 15px;
-        top: 10px;
-        right: 10px;
-        min-width: auto;
-        white-space: nowrap;
-    }
 
-    .logout-btn:hover {
-        transform: scale(1.02);
-        /* 移动端减少旋转效果 */
-    }
 }
 
 /* 小屏幕移动端优化 (320px - 576px) */
@@ -1510,7 +1455,7 @@ onBeforeUnmount(() => {
         line-height: 1.5;
     }
 
-    .user-info-card .text-center .text-xl {
+    .user-info-card .text-xl {
         font-size: 1.375rem;
         /* 22px */
     }
