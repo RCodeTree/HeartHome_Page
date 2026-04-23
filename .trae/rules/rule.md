@@ -6,6 +6,7 @@
 
 ## 2. 目录与命名
 - `src/views` 放页面，文件名大写开头（PascalCase），如 `UserCenter.vue`。
+- `src/types` 放类型定义，文件名大写开头（PascalCase），如 `User.ts`。
 - `src/components` 放公共复用组件，文件名小写开头（kebab/camel），如 `base-card.vue`。
 - `src/router` 管路由，`src/store` 管状态，`src/api` 管接口；禁止跨层乱放代码。
 
