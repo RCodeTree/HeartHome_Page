@@ -2,9 +2,9 @@ import axios from 'axios';
 // import type { InternalAxiosRequestConfig } from 'axios';
 
 // 创建axios实例
-// const BASE_URL = import.meta.env.BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const http = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: BASE_URL,
     timeout: 10000
 });
 
